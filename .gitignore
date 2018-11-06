@@ -62,6 +62,9 @@ target/
 # Database
 *.db
 *.rdb
+# ignore only jpgs inside the data directory
+data/**/*.jpg
+*.zip
 
 # Pycharm
 .idea

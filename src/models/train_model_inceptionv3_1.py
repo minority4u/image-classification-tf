@@ -1,28 +1,27 @@
-import logging
 import os
 from src.utils_io import Console_and_file_logger, ensure_dir
+import logging
 from argparse import ArgumentParser
 import yaml
 from src.models.v3_model import *
-from src.data.make_dataset import GetTrainGenerator, GetValidationGenerator
+from src.data.make_dataset import GetTrainAndValidationGenerator
 import json
-
+from time import time
 
 
 def train(config):
     logging.info('training starts')
-    x_train = {}
-    y_train = {}
-    x_test = {}
-    y_test = {}
 
-
+    t1 = time()
     # get train generator
-    train_generator = GetTrainGenerator(config.data_dir)
-    validation_generator = GetValidationGenerator(config.data_dir)
+    train_generator, validation_generator = GetTrainAndValidationGenerator(config['data_dir'])
+    logging.info('Generator  loaded in: {:0.3f}s'.format( time() - t1))
 
     # get model
-    aliases, model = get_model()
+    t1 = time()
+    #model = keras.applications.vgg19.VGG19()
+    liases, model = get_model()
+    logging.info('Model  loaded in: {:0.3f}s'.format(time() - t1))
 
 
     # compile model
@@ -36,16 +35,16 @@ def train(config):
     #model.fit(x_train, y_train,batch_size=config.batch_size,epochs=config.epochs,verbose=1,validation_data=(x_test, y_test))
 
     # model fit with generator
-    model.fit_generator(train_generator, steps_per_epoch=config.batch_size, epochs=config.epochs, verbose=2, callbacks=None, validation_data=validation_generator,
+    model.fit_generator(train_generator, steps_per_epoch=75, epochs=config['epochs'], verbose=2, callbacks=None, validation_data=None,
                   validation_steps=None, class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False,
                   shuffle=True, initial_epoch=0)
 
 
 
     # get score
-    score = model.evaluate(x_test, y_test, verbose=0)
-    print('Test loss:', score[0])
-    print('Test accuracy:', score[1])
+    #score = model.evaluate(x_test, y_test, verbose=0)
+    #print('Test loss:', score[0])
+    #print('Test accuracy:', score[1])
 
     # evaluate with generator
     model.evaluate_generator(validation_generator, steps=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)
@@ -60,7 +59,7 @@ def train(config):
         json_file.write(model_json)
     # serialize weights to HDF5
     model.save_weights("models/model.h5")
-    print("Saved model to disk")
+    logging.info("Saved model to disk")
 
 
 
@@ -74,6 +73,7 @@ def main():
 
 if __name__ == '__main__':
     # Define argument parser
+    Console_and_file_logger('Train_inception_v3')
 
     logging.info('loading config')
     parser = ArgumentParser()
@@ -101,9 +101,9 @@ if __name__ == '__main__':
     logging.info(json.dumps(params, indent=2))
 
     logging.info(('old config:'))
-    logging.info(json.dumps({"kfold": 1, "numPorts": 1, "samples": {"validation": 450, "training": 2100, "split": 3, "test": 450}, "datasetLoadOption": "batch", "mapping": {"Filename": {"port": "InputPort0", "type": "Image", "shape": "", "options": {"horizontal_flip": False, "Height": "224", "rotation_range": 0, "vertical_flip": False, "width_shift_range": 0, "Normalization": False, "Width": "224", "shear_range": 0, "pretrained": "None", "Scaling": 1, "Augmentation": False, "Resize": True, "height_shift_range": 0}}, "Label": {"port": "OutputPort0", "type": "Categorical", "shape": "", "options": {}}}, "dataset": {"samples": 3000, "name": "Classify1000", "type": "private"}, "shuffle": True}, indent=2))
+    #logging.info(json.dumps({"kfold": 1, "numPorts": 1, "samples": {"validation": 450, "training": 2100, "split": 3, "test": 450}, "datasetLoadOption": "batch", "mapping": {"Filename": {"port": "InputPort0", "type": "Image", "shape": "", "options": {"horizontal_flip": False, "Height": "224", "rotation_range": 0, "vertical_flip": False, "width_shift_range": 0, "Normalization": False, "Width": "224", "shear_range": 0, "pretrained": "None", "Scaling": 1, "Augmentation": False, "Resize": True, "height_shift_range": 0}}, "Label": {"port": "OutputPort0", "type": "Categorical", "shape": "", "options": {}}}, "dataset": {"samples": 3000, "name": "Classify1000", "type": "private"}, "shuffle": True}, indent=2))
 
 
-    Console_and_file_logger('Train_inception_v3')
+
     #main(params)
-    #train(params)
+    train(params)
