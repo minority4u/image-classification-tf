@@ -51,7 +51,7 @@ class Console_and_file_logger():
             logging.info('Log directory: {}'.format(log_dir))
 
 
-def __ensure_dir__(file_path):
+def ensure_dir(file_path):
     """
     Make sure a directory exists or create it
     :param file_path:
@@ -61,7 +61,7 @@ def __ensure_dir__(file_path):
         logging.debug('Creating directory {}'.format(file_path))
         os.makedirs(file_path)
 
-def __save_plot__(fig, path, filename=''):
+def save_plot(fig, path, filename=''):
     """
     Saves an matplotlib figure to the given path + filename
     If the figure exists, ad a number at the end and increase it
@@ -72,7 +72,7 @@ def __save_plot__(fig, path, filename=''):
     :return:
     """
     logging.debug('Trying to save to {0}'.format(path))
-    __ensure_dir__(path)
+    ensure_dir(path)
     plt.tight_layout()
 
     i = 0

@@ -1,1 +1,4 @@
-batch_size :
+batch_size : 10
+epochs : 10
+data_dir : './data/raw/classification_data/'
+model_path : './models/inception_v3/'
