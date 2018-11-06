@@ -82,4 +82,28 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    main()
+
+def preprocess(img):
+
+    options = {}
+
+    width, desired_width= img.shape[0]
+    height, desired_height = img.shape[1]
+    img = image.array_to_img(img, scale=False)
+
+    if("width" in options & options["width"] < width):
+        desired_width = options["width"]
+
+    if("height" in options & options["height"] < height):
+        desired_height = options["height"]
+
+    start_x = np.maximum(0, int((width-desired_width)/2))
+
+    img = img.crop((start_x, np.maximum(0, height-desired_height), start_x+desired_width, height))
+    img = img.resize((48, 48))
+
+    img = image.img_to_array(img)
+    img = img / 255.
+
+    return img
+
