@@ -3,11 +3,62 @@ import os
 from src.utils_io import Console_and_file_logger
 from argparse import ArgumentParser
 import yaml
+from src.models.v3_model import *
+from src.data.make_dataset import *
+import json
 
 
 
-def train():
+def train(config):
     logging.info('training starts')
+    x_train = {}
+    y_train = {}
+    x_test = {}
+    y_test = {}
+
+
+    # get train generator
+    train_generator = GetTrainGenerator(config.data_dir)
+    validation_generator = GetValidationGenerator(config.data_dir)
+
+    # get model
+    aliases, model = get_model(config)
+
+
+    # compile model
+    model.compile(loss=get_loss_function(),
+                  optimizer=get_optimizer(),
+                  metrics=['accuracy'])
+
+
+
+    # model fit
+    model.fit(x_train, y_train,
+              batch_size=config.batch_size,
+              epochs=config.epochs,
+              verbose=1,
+              validation_data=(x_test, y_test))
+
+    # model fit with generator
+    model.fit_generator(train_generator, steps_per_epoch=config.batch_size, epochs=config.epochs, verbose=2, callbacks=None, validation_data=validation_generator,
+                  validation_steps=None, class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False,
+                  shuffle=True, initial_epoch=0)
+
+
+
+    # get score
+    score = model.evaluate(x_test, y_test, verbose=0)
+    print('Test loss:', score[0])
+    print('Test accuracy:', score[1])
+
+    # Save the model
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open("models/model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("models/model.h5")
+    print("Saved model to disk")
 
 
 
@@ -21,10 +72,13 @@ def main():
 
 if __name__ == '__main__':
     # Define argument parser
+
+    logging.info('loading config')
     parser = ArgumentParser()
 
     # define arguments and default values to parse
-    parser.add_argument("--config", "-c", help="Define the path to config.yml", default="config.yml", required=False)
+    # define tha path to your config file
+    parser.add_argument("--config", "-c", help="Define the path to config.yml", default="./config/experiments/inception_v3_base.yml", required=False)
 
     args = parser.parse_args()
 
@@ -36,11 +90,17 @@ if __name__ == '__main__':
     params = yaml.load(open(args.config, "r"))
 
     # Make sure that source and destination are set
-    assert {"dir_to_src", "dir_to_dest"} <= set(
+    assert {"batch_size", "epochs", "data_dir"} <= set(
         params.keys()), "Configuration is incomplete! Please define dir_to_src and dir_to_dest in config.yml"
 
     # Make sure source folder exists
-    assert os.path.exists(params["dir_to_src"]), "Path to src {} does not exist!".format(params["dir_to_src"])
+    assert os.path.exists(params["data_dir"]), "Path to src {} does not exist!".format(params["data_dir"])
+
+    logging.info(json.dumps(params, indent=2))
+
+    logging.info(('old config:'))
+    logging.info(json.dumps({"kfold": 1, "numPorts": 1, "samples": {"validation": 450, "training": 2100, "split": 3, "test": 450}, "datasetLoadOption": "batch", "mapping": {"Filename": {"port": "InputPort0", "type": "Image", "shape": "", "options": {"horizontal_flip": false, "Height": "224", "rotation_range": 0, "vertical_flip": false, "width_shift_range": 0, "Normalization": false, "Width": "224", "shear_range": 0, "pretrained": "None", "Scaling": 1, "Augmentation": false, "Resize": true, "height_shift_range": 0}}, "Label": {"port": "OutputPort0", "type": "Categorical", "shape": "", "options": {}}}, "dataset": {"samples": 3000, "name": "Classify1000", "type": "private"}, "shuffle": true}, indent=2))
+
 
     Console_and_file_logger('Train_inception_v3')
-    main()
+    #main()

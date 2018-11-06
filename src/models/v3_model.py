@@ -1,12 +1,13 @@
 import keras
 from keras.layers.convolutional import Convolution2D
-from keras.engine.topology import merge
+#from keras.engine.topology import merge
 from keras.layers.core import Dense
 from keras.layers.pooling import MaxPooling2D
 from keras.layers.core import Flatten
 from keras.layers import Input
 from keras.models import Model
 from keras.regularizers import *
+from keras.layers import merge
 
 
 def get_model():
