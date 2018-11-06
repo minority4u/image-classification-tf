@@ -33,8 +33,8 @@ def __GetImageDataGenerator__(validationSplit = 0.2):
         validation_split=validationSplit)
     return datagen
 
-def GetTrainAndValidationGenerator(pathToData, imageSize = (224,224), batchSize =  32, classmode = 'categorical'):
-    imageDataGenerator = __GetImageDataGenerator__()
+def GetTrainAndValidationGenerator(pathToData, validationSplit = 0.2, imageSize = (224,224), batchSize =  32, classmode = 'categorical'):
+    imageDataGenerator = __GetImageDataGenerator__(validationSplit)
     train_generator = __GetTrainGenerator__(imageDataGenerator, pathToData, imageSize, batchSize, classmode)
     validation_generator = __GetValidationGenerator__(imageDataGenerator, pathToData, imageSize, batchSize, classmode)
     return train_generator, validation_generator
