@@ -1,4 +1,10 @@
-batch_size : 10
+experiment_name : 'Train_inception_v3'
+batch_size : 32
+steps_per_epoch : 75
 epochs : 10
 data_dir : './data/raw/classification_data/'
 model_path : './models/inception_v3/'
+validationSplit : 0.2
+imageSize : (224,224)
+batchSize :  32
+classmode : 'categorical'

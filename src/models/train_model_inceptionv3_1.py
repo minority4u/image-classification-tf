@@ -73,9 +73,6 @@ def main():
 
 if __name__ == '__main__':
     # Define argument parser
-    Console_and_file_logger('Train_inception_v3')
-
-    logging.info('loading config')
     parser = ArgumentParser()
 
     # define arguments and default values to parse
@@ -92,15 +89,16 @@ if __name__ == '__main__':
     params = yaml.load(open(args.config, "r"))
 
     # Make sure that source and destination are set
-    assert {"batch_size", "epochs", "data_dir"} <= set(
+    assert {"batch_size", "epochs", "data_dir", "experiment_name"} <= set(
         params.keys()), "Configuration is incomplete! Please define dir_to_src and dir_to_dest in config.yml"
 
     # Make sure source folder exists
     assert os.path.exists(params["data_dir"]), "Path to src {} does not exist!".format(params["data_dir"])
 
+    Console_and_file_logger(params["experiment_name"])
+    logging.info('Starting experiment {}'.format(params["experiment_name"]))
     logging.info(json.dumps(params, indent=2))
 
-    logging.info(('old config:'))
     #logging.info(json.dumps({"kfold": 1, "numPorts": 1, "samples": {"validation": 450, "training": 2100, "split": 3, "test": 450}, "datasetLoadOption": "batch", "mapping": {"Filename": {"port": "InputPort0", "type": "Image", "shape": "", "options": {"horizontal_flip": False, "Height": "224", "rotation_range": 0, "vertical_flip": False, "width_shift_range": 0, "Normalization": False, "Width": "224", "shear_range": 0, "pretrained": "None", "Scaling": 1, "Augmentation": False, "Resize": True, "height_shift_range": 0}}, "Label": {"port": "OutputPort0", "type": "Categorical", "shape": "", "options": {}}}, "dataset": {"samples": 3000, "name": "Classify1000", "type": "private"}, "shuffle": True}, indent=2))
 
 

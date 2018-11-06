@@ -41,13 +41,13 @@ def get_model():
     Convolution2D_1 = Conv2D(name="Convolution2D_1", activation="relu", kernel_size=(1, 1), filters=32,   padding="same")(Convolution2D_239)
     Convolution2D_4 = Conv2D(name="Convolution2D_4", activation="relu", kernel_size=(3, 1), filters=64,   padding="same")(Convolution2D_1)
     Convolution2D_6 = Conv2D(name="Convolution2D_6", activation="relu", kernel_size=(1, 3), filters=64,   padding="same")(Convolution2D_4)
-    Convolution2D_2 = Conv2D(name="Convolution2D_2", activation="relu", kernel_size=(1, 1),  filters=32, data_format="channels_first")(Convolution2D_239)
+    Convolution2D_2 = Conv2D(name="Convolution2D_2", activation="relu", kernel_size=(1, 1),  filters=32)(Convolution2D_239)
     Convolution2D_8 = Conv2D(name="Convolution2D_8", activation="relu", kernel_size=(3, 1), filters=64, strides=(2, 1),   padding="same")(Convolution2D_2)
     Convolution2D_9 = Conv2D(name="Convolution2D_9", activation="relu", kernel_size=(1, 3), filters=64, strides=(1, 2),   padding="same")(Convolution2D_8)
     Convolution2D_5 = Conv2D(name="Convolution2D_5", activation="relu", kernel_size=(3, 1), filters=64, strides=(2, 1),   padding="same")(Convolution2D_6)
     Convolution2D_7 = Conv2D(name="Convolution2D_7", activation="relu", kernel_size=(1, 3), filters=64, strides=(1, 2),   padding="same")(Convolution2D_5)
 
-    merge_1 = concatenate(inputs=[Convolution2D_10, Convolution2D_9, Convolution2D_7, Convolution2D_3], name='merge_1',axis=1)
+    merge_1 = concatenate(inputs=[Convolution2D_10, Convolution2D_9, Convolution2D_7, Convolution2D_3], name='merge_1',axis=-1)
 
     Convolution2D_130 = Conv2D(name="Convolution2D_130", activation="relu", kernel_size=(1, 1),   filters=128, strides=(2, 2))(merge_1)
 
@@ -63,7 +63,7 @@ def get_model():
     Convolution2D_124 = Conv2D(name="Convolution2D_124", activation="relu", kernel_size=(3, 1),   filters=128, strides=(2, 1), padding="same")(Convolution2D_123)
     Convolution2D_125 = Conv2D(name="Convolution2D_125", activation="relu", kernel_size=(1, 3),   filters=128, strides=(1, 2), padding="same")(Convolution2D_124)
 
-    merge_10 = concatenate(inputs=[Convolution2D_128, Convolution2D_129, Convolution2D_125, Convolution2D_130],name='merge_10', axis=1)
+    merge_10 = concatenate(inputs=[Convolution2D_128, Convolution2D_129, Convolution2D_125, Convolution2D_130],name='merge_10', axis=-1)
 
     MaxPooling2D_70 = MaxPooling2D(name='MaxPooling2D_70',   pool_size=(7, 7))(merge_10)
 
