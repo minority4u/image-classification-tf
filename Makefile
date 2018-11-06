@@ -21,9 +21,9 @@ endif
 #################################################################################
 
 ## Train new model
-train: requirements
+train_v3: requirements
 	. venv/bin/activate ; \
-	python src/models/train_model.py
+	python src/models/train_model_inceptionv3_1.py
 
 ## Install Python Dependencies
 requirements: test_environment
@@ -38,7 +38,7 @@ requirements: test_environment
 	venv/bin/pip install -r requirements.txt
 
 
-## setup, activate and deploy flask locally
+## Install Python dependencies, activate and deploy flask locally
 run: requirements
 	. venv/bin/activate ; \
 	python src/app/app.py
