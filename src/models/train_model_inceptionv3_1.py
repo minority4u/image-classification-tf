@@ -85,6 +85,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     os.chdir(args.working_dir)
+    print(args.config)
 
     # Make sure the config exists
     assert os.path.exists(
