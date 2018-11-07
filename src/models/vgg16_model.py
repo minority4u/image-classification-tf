@@ -26,12 +26,12 @@ def get_model():
 
     # LOAD VGG16
     # Generate a model with all layers (with top)
-    vgg16 = VGG16(weights=None, include_top=True)
+    vgg16 = VGG16(weights='imagenet', include_top=True)
 
     # Add a layer where input is the output of the  second last layer
     x = Dense(3, activation='softmax', name='predictions')(vgg16.layers[-2].output)
 
-    # Then create the corresponding model 
+    # Then create the corresponding model
     model = Model(input=vgg16.input, output=x)
     model.summary()
 
