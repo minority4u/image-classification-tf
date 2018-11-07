@@ -109,25 +109,62 @@ def __get_generator__(image_data_generator, path_to_data, image_size, batch_size
     return train_generator
 
 
-def __preprocess__(img):
+if __name__ == '__main__':
+    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+    # not used in this stub but often useful for finding various files
+    project_dir = Path(__file__).resolve().parents[2]
+
+    # find .env automagically by walking up directories until it's found, then
+    # load up the .env entries as environment variables
+    load_dotenv(find_dotenv())
+
+
+def preprocess(img):
+    """
+    preprocesses an Image with several options
+    :param img: Image (type: keras_preprocessing.image)
+    :return: preprocessed Image (type: keras_preprocessing.image)
+    """
+
+    # define preprocess options
+    # possible options: width, height,
     options = {}
 
-    width, desired_width = img.shape[0]
-    height, desired_height = img.shape[1]
-    img = image.array_to_img(img, scale=False)
+    #CROPPING
+    cropping = False
 
-    if "width" in options & options["width"] < width:
-        desired_width = options["width"]
+    # check for cropping options
+    if 'width' in options and options['width'] < img.shape[0]:
+        desired_width = options['width']
+        cropping = True
+    else:
+        desired_width = img.shape[0]
 
-    if "height" in options & options["height"] < height:
-        desired_height = options["height"]
+    if 'height' in options and options['height'] < img.shape[1]:
+        desired_height = options['height']
+        cropping = True
+    else:
+        desired_height = img.shape[1]
 
-    start_x = np.maximum(0, int((width - desired_width) / 2))
+    # crop if necessary
+    if(cropping):
 
-    img = img.crop((start_x, np.maximum(0, height - desired_height), start_x + desired_width, height))
-    img = img.resize((48, 48))
+        # initialise width and height from img shape
+        width = img.shape[0]
+        height = img.shape[1]
+        img = image.array_to_img(img, scale=False)
 
-    img = image.img_to_array(img)
-    img = img / 255.
+        left = np.max(0, int((width - desired_width) / 2))
+        bottom = np.max(0, int((height - desired_height) / 2))
+
+        # crop and resize img
+        img = img.crop((left, bottom + desired_height, left + desired_width, bottom))
+        img = img.resize((desired_width, desired_height))
+
+        # normalize img
+        img = image.img_to_array(img)
+        img = img / 255.
 
     return img
