@@ -1,4 +1,7 @@
 import os
+import sys
+sys.path.append(os.path.abspath("."))
+print(sys.path)
 from src.utils_io import Console_and_file_logger, ensure_dir, parameter_logger
 import logging
 from argparse import ArgumentParser
@@ -76,7 +79,12 @@ if __name__ == '__main__':
     # define tha path to your config file
     parser.add_argument("--config", "-c", help="Define the path to config.yml", default="./config/experiments/inception_v3_base.yml", required=False)
 
+    parser.add_argument("--working_dir", help="Define the absolute path to the project root",
+                        default="../../", required=False)
+
     args = parser.parse_args()
+
+    os.chdir(args.working_dir)
 
     # Make sure the config exists
     assert os.path.exists(
@@ -93,7 +101,7 @@ if __name__ == '__main__':
     assert os.path.exists(params["data_dir"]), "Path to src {} does not exist!".format(params["data_dir"])
 
     # Define central logger, set name and logging level
-    Console_and_file_logger(logfile_name=params["experiment_name"], log_lvl="DEBUG")
+    Console_and_file_logger(logfile_name=params["experiment_name"], log_lvl="INFO")
     logging.info('Starting experiment {}'.format(params["experiment_name"]))
     logging.info(json.dumps(params, indent=2))
 
