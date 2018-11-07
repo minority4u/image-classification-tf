@@ -8,6 +8,7 @@ import numpy as np
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 
+
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
 @click.argument('output_filepath', type=click.Path())
@@ -20,8 +21,12 @@ def main(input_filepath, output_filepath):
 
 
 # Hardcode Config für Training und Validation
-def __GetImageDataGenerator__(validationSplit = 0.2):
-    datagen = ImageDataGenerator(
+def __get_image_data_generator__(validationSplit):
+    """
+    :param validationSplit: Defines how many images will be in validation set, in % e.g. 0.2 = 20%
+    :return: ImageDataGenerator
+    """
+    data_generator = ImageDataGenerator(
         featurewise_center=False,
         featurewise_std_normalization=False,
         rescale=(1. / 255),
@@ -29,46 +34,50 @@ def __GetImageDataGenerator__(validationSplit = 0.2):
         zoom_range=0,
         horizontal_flip=False,
         vertical_flip=False,
-        #preprocessing_function=preprocess,
+        # preprocessing_function=preprocess,
         validation_split=validationSplit)
-    return datagen
+    return data_generator
 
-def GetTrainAndValidationGenerator(pathToData, validationSplit = 0.2, imageSize = (224,224), batchSize =  32, classmode = 'categorical'):
-    imageDataGenerator = __GetImageDataGenerator__(validationSplit)
-    train_generator = __GetTrainGenerator__(imageDataGenerator, pathToData, imageSize, batchSize, classmode)
-    validation_generator = __GetValidationGenerator__(imageDataGenerator, pathToData, imageSize, batchSize, classmode)
+
+def get_train_and_validation_generator(path_to_data, validation_split, image_size, batch_size, class_mode):
+    """
+    Returns Training and Validation Generator for Keras fit_generator usage
+    :param path_to_data: Path to data directory. subfolders describe the classes
+    :param validation_split:
+    :param image_size:
+    :param batch_size:
+    :param class_mode:
+    :return:
+    """
+    image_data_generator = __get_image_data_generator__(validation_split)
+    train_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode,
+                                        'training')
+    validation_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode,
+                                             'validation')
     return train_generator, validation_generator
 
-def __GetAllImages__(pathToData, imageSize = (224,224), batchSize =  32, classmode = 'categorical'):
-    datagen = __GetImageDataGenerator__()
-    generator = datagen.flow_from_directory(
-        pathToData,
-        target_size=imageSize,
-        batch_size=batchSize,
+
+def __get_all_images__(path_to_data, image_size, batch_size, class_mode):
+    data_generator = __get_image_data_generator__()
+    generator = data_generator.flow_from_directory(
+        path_to_data,
+        target_size=image_size,
+        batch_size=batch_size,
         shuffle=True,
-        class_mode=classmode)
+        class_mode=class_mode)
     inputs, targets = next(generator)
     return inputs, targets
 
-def __GetTrainGenerator__(imageDataGenerator,pathToData, imageSize = (224, 224), batchSize = 32, classmode = 'categorical'):
-    train_generator = imageDataGenerator.flow_from_directory(
-        pathToData,
-        target_size=imageSize,
-        batch_size=batchSize,
-        shuffle=True,
-        class_mode=classmode,
-        subset='training')
-    return train_generator
 
-def __GetValidationGenerator__(imageDataGenerator, pathToData, imageSize = (224, 224), batchSize = 32, classmode = 'categorical'):
-    validation_generator = imageDataGenerator.flow_from_directory(
-        pathToData,
-        target_size=imageSize,
-        batch_size=batchSize,
+def __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode, subset):
+    train_generator = image_data_generator.flow_from_directory(
+        path_to_data,
+        target_size=image_size,
+        batch_size=batch_size,
         shuffle=True,
-        class_mode=classmode,
-        subset='validation')
-    return validation_generator
+        class_mode=class_mode,
+        subset=subset)
+    return train_generator
 
 
 if __name__ == '__main__':
@@ -84,26 +93,24 @@ if __name__ == '__main__':
 
 
 def preprocess(img):
-
     options = {}
 
-    width, desired_width= img.shape[0]
+    width, desired_width = img.shape[0]
     height, desired_height = img.shape[1]
     img = image.array_to_img(img, scale=False)
 
-    if("width" in options & options["width"] < width):
+    if ("width" in options & options["width"] < width):
         desired_width = options["width"]
 
-    if("height" in options & options["height"] < height):
+    if ("height" in options & options["height"] < height):
         desired_height = options["height"]
 
-    start_x = np.maximum(0, int((width-desired_width)/2))
+    start_x = np.maximum(0, int((width - desired_width) / 2))
 
-    img = img.crop((start_x, np.maximum(0, height-desired_height), start_x+desired_width, height))
+    img = img.crop((start_x, np.maximum(0, height - desired_height), start_x + desired_width, height))
     img = img.resize((48, 48))
 
     img = image.img_to_array(img)
     img = img / 255.
 
     return img
-
