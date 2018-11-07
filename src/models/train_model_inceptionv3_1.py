@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     # define arguments and default values to parse
     # define tha path to your config file
-    parser.add_argument("--config", "-c", help="Define the path to config.yml", default="./config/experiments/inception_v3_base.yml", required=False)
+    parser.add_argument("--config", "-c", help="Define the path to config.yml", default="config/experiments/inception_v3_base.yml", required=False)
 
     parser.add_argument("--working_dir", help="Define the absolute path to the project root",
                         default="../../", required=False)
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     # Make sure the config exists
     assert os.path.exists(
-        args.config), "Config does not exist!, Please create a config.yml in root or set the path with --config."
+        args.config), "Config does not exist {}!, Please create a config.yml in root or set the path with --config.".format(args.config)
 
     # Load config
     params = yaml.load(open(args.config, "r"))
