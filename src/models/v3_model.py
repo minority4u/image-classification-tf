@@ -10,34 +10,26 @@ from keras.layers import Input, MaxPooling2D
 from keras.models import Model
 from keras.regularizers import *
 from keras.layers.merge import concatenate
+import logging
 
 
 def get_model():
     aliases = {}
     Input_1 = Input(shape=(224, 224, 3), name='Input_1')
-    print('Shape Input_1: {}'.format(Input_1.get_shape()))
+
     Convolution2D_236 = Conv2D(name="Convolution2D_236", activation="relu",   kernel_size=(3, 3), filters=32, strides=(2, 2), padding="same")(Input_1)
-    print('Shape Convolution2D_236: {}'.format(Convolution2D_236.get_shape()))
     Convolution2D_235 = Conv2D(name="Convolution2D_235", activation="relu",   kernel_size=(3, 3), filters=32, padding="same")(Convolution2D_236)
-    print('Shape Convolution2D_235: {}'.format(Convolution2D_235.get_shape()))
     Convolution2D_237 = Conv2D(name="Convolution2D_237", activation="relu",   kernel_size=(3, 3), filters=64)(Convolution2D_235)
-    print('Shape Convolution2D_237: {}'.format(Convolution2D_237.get_shape()))
 
     MaxPooling2D_69 = MaxPooling2D(name="MaxPooling2D_69", strides=(2, 2), pool_size=(3, 3),   padding="same")(Convolution2D_237)
-    print('Shape MaxPooling2D_69: {}'.format(MaxPooling2D_69.get_shape()))
 
     Convolution2D_238 = Conv2D(name="Convolution2D_238", activation="relu", kernel_size=(3, 3),   filters=80)(MaxPooling2D_69)
-    print('Shape Convolution2D_238: {}'.format(Convolution2D_238.get_shape()))
-
     Convolution2D_239 = Conv2D(name="Convolution2D_239", activation="relu", kernel_size=(3, 3),   filters=192, strides=(2, 2))(Convolution2D_238)
-    print('Shape Convolution2D_238: {}'.format(Convolution2D_238.get_shape()))
 
     MaxPooling2D_7 = MaxPooling2D(name="MaxPooling2D_7", strides=(2, 2), pool_size=(3, 3),   padding="same")(Convolution2D_239)
-    print('Shape Convolution2D_238: {}'.format(Convolution2D_238.get_shape()))
-
 
     Convolution2D_10 = Conv2D(name="Convolution2D_10", activation="relu", kernel_size=(1, 1), filters=64,   padding="same")(MaxPooling2D_7)
-    Convolution2D_3 = Conv2D(name="Convolution2D_3", activation="relu", kernel_size=(1, 1), filters=64,   strides=(2, 2))(Convolution2D_239)
+    Convolution2D_3 = Conv2D(name="Convolution2D_3", activation="relu", kernel_size=(1, 1), filters=32,   strides=(2, 2))(Convolution2D_239)
     Convolution2D_1 = Conv2D(name="Convolution2D_1", activation="relu", kernel_size=(1, 1), filters=32,   padding="same")(Convolution2D_239)
     Convolution2D_4 = Conv2D(name="Convolution2D_4", activation="relu", kernel_size=(3, 1), filters=64,   padding="same")(Convolution2D_1)
     Convolution2D_6 = Conv2D(name="Convolution2D_6", activation="relu", kernel_size=(1, 3), filters=64,   padding="same")(Convolution2D_4)
@@ -50,9 +42,7 @@ def get_model():
     merge_1 = concatenate(inputs=[Convolution2D_10, Convolution2D_9, Convolution2D_7, Convolution2D_3], name='merge_1',axis=-1)
 
     Convolution2D_130 = Conv2D(name="Convolution2D_130", activation="relu", kernel_size=(1, 1),   filters=128, strides=(2, 2))(merge_1)
-
     MaxPooling2D_15 = MaxPooling2D(name="MaxPooling2D_15", strides=(2, 2), pool_size=(3, 3),   padding="same")(merge_1)
-
     Convolution2D_129 = Conv2D(name="Convolution2D_129", activation="relu", kernel_size=(1, 1),   filters=128, padding="same")(MaxPooling2D_15)
     Convolution2D_126 = Conv2D(name="Convolution2D_126", activation="relu", kernel_size=(1, 1),   filters=128)(merge_1)
     Convolution2D_127 = Conv2D(name="Convolution2D_127", activation="relu", kernel_size=(3, 1),   filters=128, strides=(2, 1), padding="same")(Convolution2D_126)
@@ -74,7 +64,7 @@ def get_model():
     model = Model([Input_1], [Dense_2])
 
     for l in model.layers:
-        print('Layer Shape: {} {}'.format(l.name, l.output_shape))
+        logging.debug('Layer Shape: {} {}'.format(l.name, l.output_shape))
 
     return aliases, model
 

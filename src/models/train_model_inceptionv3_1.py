@@ -1,5 +1,5 @@
 import os
-from src.utils_io import Console_and_file_logger, ensure_dir
+from src.utils_io import Console_and_file_logger, ensure_dir, parameter_logger
 import logging
 from argparse import ArgumentParser
 import yaml
@@ -8,7 +8,7 @@ from src.data.make_dataset import GetTrainAndValidationGenerator
 import json
 from time import time
 
-
+@parameter_logger
 def train(config):
     logging.info('training starts')
 
@@ -55,11 +55,11 @@ def train(config):
     model_json = model.to_json()
     model_path = config.model_path
     ensure_dir(model_path)
-    with open("models/inception_v3/model.json", "w") as json_file:
+    with open(os.path.join(model_path,'model.json'), "w") as json_file:
         json_file.write(model_json)
     # serialize weights to HDF5
     model.save_weights("models/model.h5")
-    logging.info("Saved model to disk")
+    logging.info("Saved model to disk: {}".format(model_path))
 
 
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # Make sure source folder exists
     assert os.path.exists(params["data_dir"]), "Path to src {} does not exist!".format(params["data_dir"])
 
-    Console_and_file_logger(params["experiment_name"])
+    Console_and_file_logger(params["experiment_name"], log_lvl="DEBUG")
     logging.info('Starting experiment {}'.format(params["experiment_name"]))
     logging.info(json.dumps(params, indent=2))
 

@@ -86,3 +86,14 @@ def save_plot(fig, path, filename=''):
     logging.debug('Image saved: {}'.format(os.path.join(path , newname)))
     # free memory, close fig
     plt.close(fig)
+
+def parameter_logger(func):
+    def function_wrapper(*args, **kwargs):
+        t1 = time()
+        logging.debug("Before calling {}".format(func.__name__))
+        logging.debug('Args: {}, Kwargs'.format(*args, **kwargs))
+        res = func(*args, **kwargs)
+        logging.debug(res)
+        logging.debug("{} done in {:0.3f}s.".format(func.__name__, time() - t1))
+
+    return function_wrapper
