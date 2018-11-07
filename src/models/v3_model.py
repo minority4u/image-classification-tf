@@ -14,6 +14,10 @@ import logging
 
 
 def get_model():
+    """
+    Create a keras model
+    :return: aliases, model
+    """
     aliases = {}
     Input_1 = Input(shape=(224, 224, 3), name='Input_1')
 
@@ -73,6 +77,10 @@ from keras.optimizers import *
 
 
 def get_optimizer():
+    """
+    Central optimizer definition
+    :return: e.g.: Adadelta()
+    """
     return Adadelta()
 
 
@@ -81,6 +89,11 @@ def is_custom_loss_function():
 
 
 def get_loss_function():
+    """
+    Define a loss function,
+    currently handeled by the config-file
+    :return: e.g.: 'categorical_crossentropy'
+    """
     return 'categorical_crossentropy'
 
 

@@ -88,6 +88,17 @@ def save_plot(fig, path, filename=''):
     plt.close(fig)
 
 def parameter_logger(func):
+    """
+    Helper function to log all parameters and results of a function
+    usage:
+
+    @parameter_logger
+    def foo(*args):
+        print(args)
+
+    :param func: any callable  function
+    :return: the functionwrapper
+    """
     def function_wrapper(*args, **kwargs):
         t1 = time()
         logging.debug("Before calling {}".format(func.__name__))
@@ -95,5 +106,6 @@ def parameter_logger(func):
         res = func(*args, **kwargs)
         logging.debug(res)
         logging.debug("{} done in {:0.3f}s.".format(func.__name__, time() - t1))
+        return res
 
     return function_wrapper
