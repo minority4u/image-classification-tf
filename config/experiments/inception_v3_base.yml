@@ -1,5 +1,5 @@
 experiment_name : 'Train_inception_v3'
-epochs : 10
+epochs : 100
 batch_size : 32
 steps_per_epoch : 75
 validation_split : 0.2

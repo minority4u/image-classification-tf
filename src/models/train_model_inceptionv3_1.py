@@ -62,7 +62,7 @@ def train(config):
     # Save the model
     # serialize model to JSON
     model_json = model.to_json()
-    model_path = config.model_path
+    model_path = config['model_path']
     ensure_dir(model_path)
     with open(os.path.join(model_path,'model.json'), "w") as json_file:
         json_file.write(model_json)
