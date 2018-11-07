@@ -1,0 +1,13 @@
+experiment_name : 'Train_vgg16'
+epochs : 100
+batch_size : 32
+steps_per_epoch : 75
+validation_split : 0.2
+input_image_width : 224
+input_image_height : 224
+
+data_dir : './data/raw/classification_data/'
+model_path : './models/vgg16/'
+class_mode : 'categorical'
+metrics : ['accuracy']
+loss_function : 'categorical_crossentropy'
