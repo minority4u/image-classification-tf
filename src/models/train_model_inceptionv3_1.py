@@ -9,7 +9,9 @@ import yaml
 from src.models.v3_model import *
 from src.data.make_dataset import get_train_and_validation_generator
 import json
+from sklearn.metrics import classification_report, confusion_matrix
 from time import time
+import numpy as np
 
 
 def train(config):
@@ -58,6 +60,7 @@ def train(config):
     # evaluate with generator
     model.evaluate_generator(validation_generator, steps=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)
 
+    print_confusion_matrix(model,validation_generator, int(config['steps_per_epoch']),  config['batch_size'])
 
     # Save the model
     # serialize model to JSON
@@ -71,6 +74,7 @@ def train(config):
     logging.info("Saved model to disk: {}".format(model_path))
 
 
+
 if __name__ == '__main__':
     # Define argument parser
     parser = ArgumentParser()
@@ -81,6 +85,8 @@ if __name__ == '__main__':
 
     parser.add_argument("--working_dir", help="Define the absolute path to the project root",
                         default="../../", required=False)
+
+    #parser.add_argument("--modelskiptraining", help="Skip Training", default="None", required=False)
 
     args = parser.parse_args()
 
@@ -106,3 +112,12 @@ if __name__ == '__main__':
     logging.info(json.dumps(params, indent=2))
 
     train(params)
+
+def print_confusion_matrix(thismodel, validation_generator, num_of_test_samples, batch_size):
+    Y_pred = thismodel.predict_generator(validation_generator, num_of_test_samples // batch_size + 1)
+    y_pred = np.argmax(Y_pred, axis=1)
+    print('Confusion Matrix')
+    print(confusion_matrix(validation_generator.classes, y_pred))
+    print('Classification Report')
+    target_names = ['Cats', 'Dogs', 'Horse']
+    print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
