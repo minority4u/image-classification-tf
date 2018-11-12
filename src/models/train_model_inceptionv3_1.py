@@ -15,6 +15,8 @@ from time import time
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
+from keras.preprocessing.image import ImageDataGenerator
+from keras.utils import to_categorical
 
 
 def plot_history(history):
@@ -47,10 +49,10 @@ def plot_history(history):
     ## Accuracy
     plt.figure(3)
     for l in acc_list:
-        plt.plot(epochs, history.history[l], 'b',
+        plt.plot(epochs, history.history[l], 'r',
                  label='Training accuracy (' + str(format(history.history[l][-1], '.5f')) + ')')
     for l in val_acc_list:
-        plt.plot(epochs, history.history[l], 'g',
+        plt.plot(epochs, history.history[l], 'c',
                  label='Validation accuracy (' + str(format(history.history[l][-1], '.5f')) + ')')
 
     plt.title('Accuracy')
@@ -108,7 +110,6 @@ def train(config):
     logging.info('training starts')
 
     # get train generator
-
     train_generator, validation_generator = get_train_and_validation_generator(path_to_data=config['data_dir'],
                                                                                validation_split=config[
                                                                                    'validation_split'],
@@ -118,14 +119,20 @@ def train(config):
                                                                                batch_size=config['batch_size'],
                                                                                class_mode=config['class_mode'])
 
-    '''
+    valdir = config['data_dir'] + "Validation/"
+    traindir = config['data_dir'] + "Training/"
 
-    train_generator, validation_generator = get_train_and_validation_generator(path_to_data = config['data_dir'],ddd
-                                                                               validation_split = config['validation_split'],
-                                                                               image_size = (224,224),
-                                                                               batch_size = 32,
-                                                                               class_mode = 'categorical')
-    '''
+    img_datagen = ImageDataGenerator(rescale=1. / 255)
+    validation_generator2 = img_datagen.flow_from_directory(
+        valdir,
+        target_size=(224, 224),
+        batch_size=32,
+        class_mode='categorical')
+    train_generator2 = img_datagen.flow_from_directory(
+        traindir,
+        target_size=(224, 224),
+        batch_size=32,
+        class_mode='categorical')
 
     # get model
     aliases, model = get_model()
@@ -135,47 +142,38 @@ def train(config):
                   optimizer=get_optimizer(),
                   metrics=config['metrics'])
 
+    img_datagen2 = ImageDataGenerator(rescale=1. / 255)
+    itr = img_datagen2.flow_from_directory(valdir, target_size=(224, 224), batch_size=600, class_mode='categorical')
+    endX, endY = itr.next()
+
     # model fit with generator
-    history = model.fit_generator(train_generator, steps_per_epoch=int(config['steps_per_epoch']),
+    history = model.fit_generator(train_generator2, steps_per_epoch=int(config['steps_per_epoch']),
                                   epochs=int(config['epochs']), verbose=2, callbacks=None,
-                                  validation_data=validation_generator,
+                                  validation_data=validation_generator2,
                                   validation_steps=None, class_weight=None, max_queue_size=10, workers=1,
                                   use_multiprocessing=False,
-                                  shuffle=True, initial_epoch=0)
-
-    # evaluate with generator
-    eval_score = model.evaluate_generator(validation_generator, steps=None, max_queue_size=10, workers=1,
-                                          use_multiprocessing=False, verbose=0)
-    print('Evaluation score: {0}'.format(eval_score))
+                                  shuffle=False, initial_epoch=0)
 
     # Confusion Matrix & Reports
-    print('Classes: {0}'.format(len(validation_generator.class_indices)))
-    if len(validation_generator.class_indices) == 3:
+    print('Classes: {0}'.format(len(validation_generator2.class_indices)))
+    if len(validation_generator2.class_indices) == 3:
         target_names = ['Etechnik', 'Fliesbilder', 'Tabellen']
 
-    if len(validation_generator.class_indices) == 5:
+    if len(validation_generator2.class_indices) == 5:
         target_names = ['Etechnik', 'Fliesbilder', 'Lageplan', 'Stahlbau', 'Tabellen']
 
-    validation_generator.reset()
-    predictions = model.predict_generator(validation_generator,
-                                          steps=validation_generator.samples / validation_generator.batch_size,
-                                          verbose=1, workers=1, use_multiprocessing=False)
+    validation_generator2.reset()
+
+    predictions = model.predict(endX)
+    print("Validation Data")
+    print("endY:{0}".format(endY))
+    predicted_classes = np.argmax(predictions, axis=1)
+    print("predicted_classes:{0}".format(predicted_classes))
+
     # predictions = model.predict_generator(validation_generator, steps=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)
     print("predictions {0}".format(predictions))
-    predicted_classes = np.argmax(predictions, axis=1)
-
-    print('Remapping...')
-    # label_map = (train_generator.class_indices)
-    # label_map = dict((v,k) for k,v in label_map.items()) #flip k,v
-    # predicted_classes = np.argmax(predictions, axis=-1) #multiple categories
-
-    print("predicted {0}".format(predicted_classes))
-
-    # print("remapped predictions {0}".format(predictions))
-    # predicted_classes = np.argmax(predictions,axis=1)
-    # print("remapped predicted {0}".format(predicted_classes))
-
-    ground_truth = validation_generator.classes
+    ground_truth = endY
+    ground_truth = np.argmax(ground_truth, axis=1)
     print('ground truth {0}'.format(ground_truth))
     cm = confusion_matrix(ground_truth, predicted_classes)
     print(classification_report(ground_truth, predicted_classes, target_names=target_names))
@@ -188,8 +186,6 @@ def train(config):
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=True,
                           title='Normalized confusion matrix', pathtosave='cmnormalized.png')
-
-    # Reports Ende
 
     # Save the model
     # serialize model to JSON
