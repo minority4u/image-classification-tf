@@ -13,7 +13,6 @@ import json
 from time import time
 import numpy as np
 import matplotlib.pyplot as plt
-import itertools
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import to_categorical
 from src.visualization.utils import plot_history, plot_confusion_matrix, create_reports
@@ -69,9 +68,23 @@ def train(config):
     #validation_x, validation_y = validation_generator.next()
 
 
+    callbacks = []
+
+
+    model_path = os.path.join(config['model_path'], '/weights.{epoch:02d}-{val_loss:.2f}.hdf5')
+
+    callbacks.append(keras.callbacks.ModelCheckpoint(model_path, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1))
+
+    callbacks.append(keras.callbacks.ProgbarLogger(count_mode='steps', stateful_metrics=None))
+
+    callbacks.append(keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch'))
+
+
+
+
     # model fit with generator
     history = model.fit_generator(train_generator, steps_per_epoch=int(config['steps_per_epoch']),
-                                  epochs=int(config['epochs']), verbose=2, callbacks=None,
+                                  epochs=int(config['epochs']), verbose=2, callbacks=callbacks,
                                   validation_data=validation_generator,
                                   validation_steps=20, class_weight=None, max_queue_size=10, workers=1,
                                   use_multiprocessing=False,

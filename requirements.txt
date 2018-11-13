@@ -15,4 +15,3 @@ tensorflow
 scipy
 pillow
 sklearn
-itertools
