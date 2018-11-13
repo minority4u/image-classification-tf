@@ -26,7 +26,7 @@ def get_callbacks(config):
 
 class WeightsSaver(Callback):
     def __init__(self, N, model_path):
-        self.model.path = model_path
+        self.model_path = model_path
         self.N = N
         self.batch = 0
 
