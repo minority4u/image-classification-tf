@@ -50,7 +50,7 @@ def __get_image_data_generator__(validation_split):
     return data_generator
 
 
-def get_train_and_validation_generator(path_to_data, validation_split, image_size, batch_size, class_mode):
+def get_train_and_validation_generator(path_to_data, validation_split, image_size, batch_size_train, batch_size_val, class_mode):
     """
     Returns Training and Validation Generator for Keras fit_generator usage
     :param path_to_data: Path to data directory. Subfolders describe the classes
@@ -61,10 +61,10 @@ def get_train_and_validation_generator(path_to_data, validation_split, image_siz
     :return: Returns 2 generators, training and validation
     """
     image_data_generator = __get_image_data_generator__(validation_split)
-    train_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode,
+    train_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size_train, class_mode,
                                         'training')
-    validation_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode,
-                                             'validation')
+    validation_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size_val, class_mode,
+                                             'validation', shuffle=False)
     return train_generator, validation_generator
 
 
@@ -88,7 +88,7 @@ def __get_all_images__(path_to_data, image_size, batch_size, class_mode):
     return inputs, targets
 
 
-def __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode, subset):
+def __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode, subset, shuffle=True):
     """
     Get training or validation generator
     :param image_data_generator: data generator (e.g. augmentation)
@@ -103,7 +103,7 @@ def __get_generator__(image_data_generator, path_to_data, image_size, batch_size
         path_to_data,
         target_size=image_size,
         batch_size=batch_size,
-        shuffle=True,
+        shuffle=shuffle,
         class_mode=class_mode,
         subset=subset)
     return train_generator
