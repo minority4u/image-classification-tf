@@ -65,6 +65,8 @@ target/
 # ignore only jpgs inside the data directory
 data/**/*.jpg
 *.zip
+*.h5
+*.hdf5
 
 # Pycharm
 .idea

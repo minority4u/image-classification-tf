@@ -1,21 +1,22 @@
 import os
 import sys
-from src.visualization.utils import plot_confusion_matrix, plot_history
+
 sys.path.append(os.path.abspath("."))
 print(sys.path)
-from src.utils_io import Console_and_file_logger, ensure_dir, parameter_logger
-import logging
+
+# import own lobs
+from src.models.v3_model import *
+from src.data.make_dataset import get_train_and_validation_generator
+from src.models.model_utils import get_callbacks
+from src.utils_io import Console_and_file_logger, ensure_dir
+from src.visualization.utils import create_reports
+
+# import external libs
+import json
 from argparse import ArgumentParser
 import yaml
-from src.models.v3_model import *
-from src.data.make_dataset import get_train_and_validation_generator, get_callbacks
-import json
-from time import time
 import numpy as np
-import matplotlib.pyplot as plt
-from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import to_categorical
-from src.visualization.utils import plot_history, plot_confusion_matrix, create_reports
+
 
 def train(config):
     """
@@ -33,10 +34,10 @@ def train(config):
                                                                                image_size=(config['input_image_width'],
                                                                                            config[
                                                                                                'input_image_height']),
-                                                                               batch_size_train=config['batch_size_train'],
+                                                                               batch_size_train=config[
+                                                                                   'batch_size_train'],
                                                                                batch_size_val=config['batch_size_val'],
                                                                                class_mode=config['class_mode'])
-
     # get model
     aliases, model = get_model()
 
@@ -44,8 +45,6 @@ def train(config):
     model.compile(loss=config['loss_function'],
                   optimizer=get_optimizer(),
                   metrics=config['metrics'])
-
-
 
     callbacks = get_callbacks(config)
 
@@ -57,8 +56,8 @@ def train(config):
                                   use_multiprocessing=False,
                                   shuffle=False, initial_epoch=0)
 
-
-    predictions = model.predict_generator(validation_generator, steps=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)
+    predictions = model.predict_generator(validation_generator, steps=None, max_queue_size=10, workers=1,
+                                          use_multiprocessing=False, verbose=0)
     ground_truth = validation_generator.classes
     predicted_classes = np.argmax(predictions, axis=1)
 
@@ -70,20 +69,6 @@ def train(config):
     create_reports(ground_truth_max, predicted_classes, number_of_classes, config)
 
 
-    # Save the model
-    # serialize model to JSON
-    model_json = model.to_json()
-    model_path = config['model_path']
-    ensure_dir(model_path)
-    with open(os.path.join(model_path, 'model.json'), "w") as json_file:
-        json_file.write(model_json)
-    # serialize weights to HDF5
-    model.save_weights("models/model.h5")
-    logging.info("Saved model to disk: {}".format(model_path))
-
-    logging.info('History:')
-    logging.info(history.history)
-    plot_history(history)
 
 
 if __name__ == '__main__':
