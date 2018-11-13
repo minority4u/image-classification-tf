@@ -36,22 +36,7 @@ def train(config):
                                                                                batch_size_train=config['batch_size_train'],
                                                                                batch_size_val=config['batch_size_val'],
                                                                                class_mode=config['class_mode'])
-    """
-    valdir = config['data_dir'] + "Validation/"
-    traindir = config['data_dir'] + "Training/"
 
-    img_datagen = ImageDataGenerator(rescale=1. / 255)
-    validation_generator2 = img_datagen.flow_from_directory(
-        valdir,
-        target_size=(224, 224),
-        batch_size=32,
-        class_mode='categorical')
-    train_generator2 = img_datagen.flow_from_directory(
-        traindir,
-        target_size=(224, 224),
-        batch_size=32,
-        class_mode='categorical')
-    """
     # get model
     aliases, model = get_model()
 
@@ -60,26 +45,12 @@ def train(config):
                   optimizer=get_optimizer(),
                   metrics=config['metrics'])
 
-    """
-    img_datagen2 = ImageDataGenerator(rescale=1. / 255)
-    itr = img_datagen2.flow_from_directory(valdir, target_size=(224, 224), batch_size=600, class_mode='categorical')
-    endX, endY = itr.next()
-    """
-    #validation_x, validation_y = validation_generator.next()
-
 
     callbacks = []
-
-
     model_path = os.path.join(config['model_path'], '/weights.{epoch:02d}-{val_loss:.2f}.hdf5')
-
     callbacks.append(keras.callbacks.ModelCheckpoint(model_path, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1))
-
     callbacks.append(keras.callbacks.ProgbarLogger(count_mode='steps', stateful_metrics=None))
-
     callbacks.append(keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch'))
-
-
 
 
     # model fit with generator
@@ -89,24 +60,6 @@ def train(config):
                                   validation_steps=20, class_weight=None, max_queue_size=10, workers=1,
                                   use_multiprocessing=False,
                                   shuffle=False, initial_epoch=0)
-
-
-
-    #validation_generator2.reset()
-
-    # predicted_classes = []
-    # ground_truth = []
-    # validation_epochs = 600/30
-    #
-    # for batch_x, batch_y in validation_generator:
-    #     predictions = model.predict(batch_x)
-    #     logging.info("Validation Data")
-    #     logging.info("endY:{0}".format(batch_y))
-    #     predicted_cls = np.argmax(predictions, axis=1)
-    #     logging.info("predicted_classes:{0}".format(predicted_cls))
-    #
-    #     predicted_classes.append(predicted_cls)
-    #     ground_truth.append(batch_y)
 
 
     predictions = model.predict_generator(validation_generator, steps=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)
