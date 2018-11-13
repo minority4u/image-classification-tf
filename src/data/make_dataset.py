@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import click
 import logging
+import os
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import numpy as np
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import Callback
+import keras
 
 
 if __name__ == '__main__':
@@ -168,3 +171,35 @@ def preprocess(img):
         img = img / 255.
 
     return img
+
+
+
+
+def get_callbacks(config):
+    """
+    get a list of keras callbacks
+    :param config:
+    :return: a list of allback objects
+    """
+    model_path = os.path.join(config['model_path'], 'weights.{epoch:02d}-{val_loss:.2f}.hdf5')
+
+    callbacks = []
+    callbacks.append(WeightsSaver(5))
+    callbacks.append(keras.callbacks.ModelCheckpoint(model_path, monitor='val_loss', verbose=0, save_best_only=False,                                                save_weights_only=False, mode='auto', period=1))
+    callbacks.append(keras.callbacks.ProgbarLogger(count_mode='steps', stateful_metrics=None))
+    callbacks.append(keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True,
+                                                 write_grads=False, write_images=False, embeddings_freq=0,
+                                                 embeddings_layer_names=None, embeddings_metadata=None,
+                                                 embeddings_data=None, update_freq='epoch'))
+    return callbacks
+
+class WeightsSaver(Callback):
+    def __init__(self, N):
+        self.N = N
+        self.batch = 0
+
+    def on_batch_end(self, batch, logs={}):
+        if self.batch % self.N == 0:
+            name = 'weights%08d.h5' % self.batch
+            self.model.save_weights(name)
+        self.batch += 1
