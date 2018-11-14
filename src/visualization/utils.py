@@ -3,7 +3,7 @@ import numpy as np
 import itertools
 import logging
 import os
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 def plot_history(history):
     """
@@ -98,7 +98,7 @@ def plot_confusion_matrix(cm, classes, path_to_save,
     plt.savefig(path_to_save)
     plt.clf()
 
-def create_reports(ground_truth, predicted_classes, number_of_classes, config):
+def create_reports(ground_truth, predicted_classes, class_names, config):
     """
     Create validation report (confusion matrix, train/val history)
     :param ground_truth: One-Hot encoded truth (validation_generator)
@@ -107,25 +107,20 @@ def create_reports(ground_truth, predicted_classes, number_of_classes, config):
     :param config: config of experiment to read paths
     :return: none
     """
-    logging.info('Classes: {0}'.format(number_of_classes))
+    logging.info('Classes: {0}'.format(len(class_names)))
 
-    all_target_names = ['Etechnik', 'Fliesbilder', 'Tabellen', 'Lageplan', 'Stahlbau']
 
-    def get_target_names():
-        """
-        Make target_names compatible with different class lenghts
-        :return: List of target names
-        """
-        return all_target_names[0:number_of_classes]
+    target_names = class_names
 
-    target_names = get_target_names()
     cm = confusion_matrix(ground_truth, predicted_classes)
-    logging.info(classification_report(ground_truth, predicted_classes, target_names=target_names))
+
+    logging.info('\n' + classification_report(ground_truth, predicted_classes, target_names=target_names))
+    logging.info('Accuracy: {}'.format(accuracy_score(ground_truth, predicted_classes)))
 
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=False,
-                          title='Confusion matrix, without normalization', pathtosave=os.path.join(config['report_path'],'confusion_matrix.png'))
+                          title='Confusion matrix, without normalization', path_to_save=os.path.join(config['report_path'],'confusion_matrix.png'))
 
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=True,
-                          title='Normalized confusion matrix', pathtosave=os.path.join(config['report_path'],'confusion_matrix_normalized.png'))
+                          title='Normalized confusion matrix', path_to_save=os.path.join(config['report_path'],'confusion_matrix_normalized.png'))

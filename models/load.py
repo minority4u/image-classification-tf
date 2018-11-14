@@ -1,5 +1,6 @@
 import numpy as np
 import keras.models
+import logging
 from keras.models import model_from_json
 from src.models.v3_model import get_optimizer
 from scipy.misc import imread, imresize,imshow
@@ -16,7 +17,7 @@ def init(config):
 	loaded_model = model_from_json(loaded_model_json)
 	#load woeights into new model
 	loaded_model.load_weights("models/model.h5")
-	print("Loaded Model from disk")
+	logging.info("Loaded Model from disk")
 
 	#compile and evaluate loaded model
 	loaded_model.compile(loss=config['loss_function'],

@@ -16,3 +16,4 @@ scipy
 pillow
 sklearn
 flask
+opencv-python

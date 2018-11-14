@@ -68,7 +68,7 @@ def train(config):
     ground_truth_max = np.argmax(ground_truth, axis=1)
     logging.info('ground truth {0}'.format(ground_truth))
     number_of_classes = len(validation_generator.class_indices)
-    create_reports(ground_truth_max, predicted_classes, number_of_classes, config)
+    create_reports(ground_truth_max, predicted_classes, validation_generator.class_indices, config)
 
 
 
