@@ -11,7 +11,7 @@ def get_callbacks(config):
     :param config:
     :return: a list of allback objects
     """
-    model_path = os.path.join(config['model_path'], 'weights.{epoch:02d}-{val_loss:.2f}.hdf5')
+    model_path = os.path.join(config['model_path'], '/weights{epoch:02d}-{val_loss:.2f}/')
 
     callbacks = []
     callbacks.append(WeightsSaver(config['steps_per_epoch'], model_path))
@@ -42,6 +42,6 @@ class WeightsSaver(Callback):
             with open(os.path.join(model_path, 'model.json'), "w") as json_file:
                 json_file.write(model_json)
             # serialize weights to HDF5
-            self.model.save_weights("models/model.h5")
+            self.model.save_weights(os.path.join(model_path, "model.h5"))
             logging.info("Saved model to disk: {}".format(model_path))
         self.batch += 1
