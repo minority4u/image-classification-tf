@@ -6,6 +6,7 @@ steps_per_epoch : 75
 validation_split : 0.2
 input_image_width : 224
 input_image_height : 224
+save_after_epochs: 1
 
 data_dir : 'data/raw/classification_data/'
 model_path : 'models/'

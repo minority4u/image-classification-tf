@@ -10,12 +10,14 @@ from src.data.make_dataset import get_train_and_validation_generator
 from src.models.model_utils import get_callbacks
 from src.utils_io import Console_and_file_logger, ensure_dir
 from src.visualization.utils import create_reports
+from keras.backend.tensorflow_backend import set_session
 
 # import external libs
 import json
 from argparse import ArgumentParser
 import yaml
 import numpy as np
+import tensorflow as tf
 
 
 def train(config):
@@ -72,6 +74,13 @@ def train(config):
 
 
 if __name__ == '__main__':
+    #gpu_options = tf.GPUOptions(allow_growth=True)
+    #session_config =tf.ConfigProto(allow_soft_placement=True, log_device_placement=False, gpu_options=gpu_options)
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+    config.log_device_placement = False
+    session = tf.Session(config=config)
+    set_session(session)
     # Define argument parser
     parser = ArgumentParser()
 
