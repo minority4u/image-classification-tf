@@ -24,6 +24,10 @@ def save_image_slices(images):
                 slice_name = file_n + "_" + str(idy) + ".jpg"
                 filename = os.path.join(full_path, slice_name)
                 cv2.imwrite(filename, slice)
+                del slice
+            del image
+        del image_list
+
 
 
 
