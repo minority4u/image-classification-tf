@@ -44,6 +44,8 @@ def load_all_images(path_to_folder = 'data/raw/test/'):
     for file in sorted(os.listdir(path_to_folder)):
         current_file = os.path.join(path_to_folder, file)
         if os.path.isdir(current_file):
+            # class / label found
+            class_names.append(file)
             images.append((file, load_all_images(current_file)))
         #logging.debug('current file: {}'.format(current_file))
         filename, file_extension = os.path.splitext(current_file)
@@ -67,7 +69,7 @@ def predict_single_slice(image):
 
 def predict_single_img(imgData):
     slice_predictions = []
-    class_names = config['all_target_names']
+    #class_names = config['all_target_names']
 
     logging.debug('shape original image: {}'.format(imgData.shape))
     slices = create_slides(imgData)
@@ -104,7 +106,7 @@ def inference():
     test_label = []
 
     for label, list_of_pred in results:
-        class_names.append(label)
+        #class_names.append(label)
         if list_of_pred:
             for pred in list_of_pred:
                 test_pred.append(pred)

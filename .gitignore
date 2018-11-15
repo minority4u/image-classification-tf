@@ -67,6 +67,7 @@ data/**/*.jpg
 *.zip
 *.h5
 *.hdf5
+*.png
 logs/*
 
 # Pycharm
@@ -96,3 +97,5 @@ output.png
 *.c
 *.h
 output.png
+*.png
+*.png
