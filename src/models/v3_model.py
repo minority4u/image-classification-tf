@@ -62,8 +62,8 @@ def get_model():
     MaxPooling2D_70 = MaxPooling2D(name='MaxPooling2D_70',   pool_size=(7, 7))(merge_10)
 
     Flatten_5 = Flatten(name='Flatten_5')(MaxPooling2D_70)
-    Dense_14 = Dense(name="Dense_14", activation="linear", units=3)(Flatten_5)
-    Dense_2 = Dense(name="Dense_2", activation="softmax", units=3)(Dense_14)
+    Dense_14 = Dense(name="Dense_14", activation="linear", units=5)(Flatten_5)
+    Dense_2 = Dense(name="Dense_2", activation="softmax", units=5)(Dense_14)
 
     model = Model([Input_1], [Dense_2])
 

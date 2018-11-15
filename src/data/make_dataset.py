@@ -42,7 +42,7 @@ def __get_image_data_generator__(validation_split):
         featurewise_std_normalization=False,
         rescale=(1. / 255),
         shear_range=0,
-        zoom_range=0,
+        zoom_range=0.2,
         horizontal_flip=False,
         vertical_flip=False,
         # preprocessing_function=__preprocess__,

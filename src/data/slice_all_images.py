@@ -4,6 +4,7 @@ import logging
 import yaml
 import json
 import cv2
+import math
 from argparse import ArgumentParser
 sys.path.append(os.path.abspath("."))
 
@@ -13,13 +14,19 @@ from src.data.preprocessing import create_slides
 
 global source_root, destination_root
 
+crop_precentage = 7
 def save_image_slices(images):
     for label, image_list in images:
         full_path = os.path.join(destination_root, label)
         ensure_dir(full_path)
         for idx, image in enumerate(image_list):
+
+            height, width = image.shape[:2]
+            margin_width = math.floor(width / 100 * crop_precentage)
+            margin_height = math.floor(height / 100 * crop_precentage)
+            crop_img = image[margin_height:height - margin_height*2, margin_width:width - margin_width*2]
             file_n = str(label) + str(idx)
-            slices = create_slides(image)
+            slices = create_slides(crop_img)
             for idy, slice in enumerate(slices):
                 slice_name = file_n + "_" + str(idy) + ".jpg"
                 filename = os.path.join(full_path, slice_name)

@@ -9,7 +9,7 @@ input_image_height : 224
 test_split : 1
 save_after_epochs: 1
 
-data_dir : 'data/raw/classification_data/'
+data_dir : 'data/processed/transformed/'
 model_path : 'models/'
 report_path: 'reports/figures/'
 class_mode : 'categorical'
