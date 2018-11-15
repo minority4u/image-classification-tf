@@ -28,8 +28,9 @@ def load_image(path = 'data/raw/test/Fliesbilder/image001.jpg'):
 def load_all_images(path_to_folder = 'data/raw/test/'):
     """
     recursive function, if it is called with path to testfiles
-    recursive calls itselfe and takes the foldername as class name
-    load all images from a test-directory
+    it calls itself and takes the folder name as class name
+    otherwise it loads all images from the class folder.
+    
     folder should have this structure:
     root
         Classname
