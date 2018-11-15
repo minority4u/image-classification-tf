@@ -6,6 +6,7 @@ import json
 import cv2
 import math
 from argparse import ArgumentParser
+
 sys.path.append(os.path.abspath("."))
 
 from src.utils_io import Console_and_file_logger, ensure_dir
@@ -14,28 +15,78 @@ from src.data.preprocessing import create_slides
 
 global source_root, destination_root
 
-crop_precentage = 7
+# each side
+crop_precentage = 10
+
 def save_image_slices(images):
+    """
+    Speichere alle Bilder
+    :param images:
+    :return:
+    """
     for label, image_list in images:
         full_path = os.path.join(destination_root, label)
+        full_path_kicked = os.path.join(destination_root, label, "kicked")
         ensure_dir(full_path)
+        ensure_dir(full_path_kicked)
         for idx, image in enumerate(image_list):
-
             height, width = image.shape[:2]
             margin_width = math.floor(width / 100 * crop_precentage)
             margin_height = math.floor(height / 100 * crop_precentage)
-            crop_img = image[margin_height:height - margin_height*2, margin_width:width - margin_width*2]
+            crop_img = image[margin_height:height - margin_height * 2, margin_width:width - margin_width * 2]
             file_n = str(label) + str(idx)
             slices = create_slides(crop_img)
+            #slices = []
+            #slices.append(crop_img)
             for idy, slice in enumerate(slices):
+                is_slice_empty = test_is_image_empty(slice)
                 slice_name = file_n + "_" + str(idy) + ".jpg"
-                filename = os.path.join(full_path, slice_name)
-                cv2.imwrite(filename, slice)
-                del slice
-            del image
-        del image_list
 
 
+                if is_slice_empty == False:
+                    filename = os.path.join(full_path, slice_name)
+                    cv2.imwrite(filename, slice)
+                    print("OK: filename: " + filename)
+                    #del slice
+                else:
+                    filename = os.path.join(full_path_kicked, slice_name)
+                    cv2.imwrite(filename, slice)
+                    print("KICKED: filename: " + filename)
+                    #del slice
+
+            #del image
+        #del image_list
+    del images
+
+
+def test_is_image_empty(image):
+    """
+    Tests whether an image slice has enough content or not
+    :param image: image slice to test
+    :return: True for empty. False for enough content
+    """
+    is_empty = False
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+    black_shades = hist[0:180]
+    white_shades = hist[216:256]
+    white_sum = 0
+    black_sum = 0
+    height, width = image.shape[:2]
+    pixel_amount = height * width
+    for white_shade in white_shades:
+        white_sum += white_shade[0:1][0]
+    for black_shade in black_shades:
+        black_sum += black_shade[0:1][0]
+    white_amount = white_sum / pixel_amount
+    black_amount = black_sum / pixel_amount
+    print("black amount: " + str(black_amount))
+    print("white amount: " + str(white_amount))
+    if white_amount > 0.98:
+        is_empty = True
+
+    print("Is slice empty: " + str(is_empty))
+    return is_empty
 
 
 def slice_all_images():
@@ -46,8 +97,7 @@ def slice_all_images():
 if __name__ == '__main__':
     # Define argument parser
     parser = ArgumentParser()
-    Console_and_file_logger('Predict_model',log_lvl=logging.DEBUG)
-
+    Console_and_file_logger('Predict_model', log_lvl=logging.DEBUG)
 
     # define arguments and default values to parse
     # define tha path to your config file
