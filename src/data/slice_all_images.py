@@ -24,18 +24,39 @@ def save_image_slices(images):
     :param images:
     :return:
     """
+    slice_width = 600
+    slice_height = 600
+    img_count = 1
     for label, image_list in images:
+
         full_path = os.path.join(destination_root, label)
         full_path_kicked = os.path.join(destination_root, label, "kicked")
         ensure_dir(full_path)
         ensure_dir(full_path_kicked)
         for idx, image in enumerate(image_list):
+            print("img count:" + str(img_count))
+            img_count +=1
             height, width = image.shape[:2]
             margin_width = math.floor(width / 100 * crop_precentage)
             margin_height = math.floor(height / 100 * crop_precentage)
-            crop_img = image[margin_height:height - margin_height * 2, margin_width:width - margin_width * 2]
+            #crop_img = image[margin_height:height - margin_height * 2, margin_width:width - margin_width * 2]
+            #crop_img = image[margin_width:width - margin_width * 2, margin_height:height - margin_height * 2]
+
+            y_size, x_size, chan = image.shape
+            x_off = (x_size - margin_width) // 2
+            y_off = (y_size - margin_height) // 2
+            crop_img = image[margin_height:-margin_height, margin_width:-margin_width]
+
+
+
             file_n = str(label) + str(idx)
-            slices = create_slides(crop_img)
+            crop_height = height-2*margin_height
+            crop_width = width-2*margin_width
+            if (crop_width < slice_width) | (crop_height < slice_height):
+                crop_img = cv2.resize(crop_width*2, crop_height*2)
+                print("Resizing image, it's too small!")
+
+            slices = create_slides(crop_img, slice_width, slice_height)
             #slices = []
             #slices.append(crop_img)
             for idy, slice in enumerate(slices):
@@ -47,15 +68,16 @@ def save_image_slices(images):
                     filename = os.path.join(full_path, slice_name)
                     cv2.imwrite(filename, slice)
                     print("OK: filename: " + filename)
-                    #del slice
+                    del slice
                 else:
                     filename = os.path.join(full_path_kicked, slice_name)
                     cv2.imwrite(filename, slice)
                     print("KICKED: filename: " + filename)
-                    #del slice
+                    del slice
 
-            #del image
-        #del image_list
+            del image
+            del crop_img
+        del image_list
     del images
 
 
