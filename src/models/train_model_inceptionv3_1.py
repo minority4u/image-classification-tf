@@ -11,6 +11,7 @@ from src.models.model_utils import get_callbacks
 from src.utils_io import Console_and_file_logger, ensure_dir
 from src.visualization.utils import create_reports
 from keras.backend.tensorflow_backend import set_session
+from collections import Counter
 
 # import external libs
 import json
@@ -40,6 +41,11 @@ def train(config):
                                                                                    'batch_size_train'],
                                                                                batch_size_val=config['batch_size_val'],
                                                                                class_mode=config['class_mode'])
+
+    counter = Counter(train_generator.classes)
+    max_val = float(max(counter.values()))
+    class_weights = {class_id: max_val / num_images for class_id, num_images in counter.items()}
+    logging.info('Class weights: {0}'.format(class_weights))
     # get model
     aliases, model = get_model()
 
@@ -54,7 +60,7 @@ def train(config):
     history = model.fit_generator(train_generator, steps_per_epoch=int(config['steps_per_epoch']),
                                   epochs=int(config['epochs']), verbose=2, callbacks=callbacks,
                                   validation_data=validation_generator,
-                                  validation_steps=20, class_weight=None, max_queue_size=10, workers=1,
+                                  validation_steps=20, class_weight=class_weights, max_queue_size=10, workers=1,
                                   use_multiprocessing=False,
                                   shuffle=True, initial_epoch=0)
 

@@ -93,7 +93,7 @@ def __get_generator__(image_data_generator, path_to_data, image_size, batch_size
     """
     Get training or validation generator
     :param image_data_generator: data generator (e.g. augmentation)
-    :param path_to_data: Path to data directory. Subfolders describe the classes
+    :param path_to_data: Pa     th to data directory. Subfolders describe the classes
     :param image_size: Input size of images (e.g. '(224, 224)' for VGG16/19)
     :param batch_size: Defines how many images will be loaded for each batch
     :param class_mode: e.g. "binary", 'categorical', 'sparse'
