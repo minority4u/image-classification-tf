@@ -4,7 +4,7 @@ import logging
 
 sys.path.append(os.path.abspath("."))
 import cv2
-from src.data.preprocessing import create_slides
+from src.data.preprocessing import create_patches
 from models.load import init
 from src.utils_io import Console_and_file_logger
 from src.visualization.utils import create_reports
@@ -75,7 +75,7 @@ def predict_single_img(imgData):
     # class_names = config['all_target_names']
 
     logging.debug('shape original image: {}'.format(imgData.shape))
-    slices = create_slides(imgData)
+    slices = create_patches(imgData)
 
     for slice in slices:
         slice_predictions.append(predict_single_slice(slice))

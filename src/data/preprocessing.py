@@ -11,7 +11,7 @@ def sliding_window(image, stepSize, windowSize):
 			yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0]])
 
 
-def create_slides(image, slice_width, slice_height):
+def create_patches(image, slice_width, slice_height):
     (winW, winH) = (slice_width,slice_height)
     result = []
     # loop over the image pyramid
