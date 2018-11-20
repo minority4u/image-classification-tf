@@ -31,22 +31,23 @@ def crop_edges(image):
     return crop_img
 
 
-def save_patches_to_disk(patches, path_n, file_n):
+def save_patches_to_disk(patches, path_name, file_n):
     """
     Saves a list of patches to disk
-    :param patches:
-    :param path_n:
-    :param file_n:
+    :param patches: list of patches from one image
+    :param path_name: destination path
+    :param file_n: filename (typically the image number)
     :return:
     """
 
     for idy, patch in enumerate(patches):
-        #
+        path_n = path_name
+        # label + image number + _ + idx patch number + .jpg
         patch_name = file_n + "_" + str(idy) + ".jpg"
 
         # define new destination for filtered images
         if is_patch_empty(patch):
-            path_n = os.path.join(path_n, "/kicked")
+            path_n = os.path.join(path_n, "/filtered")
 
         ensure_dir(path_n)
         filename = os.path.join(path_n, patch_name)
@@ -93,36 +94,25 @@ def is_patch_empty(image):
     :param image: image patch to test
     :return: True for empty. False for enough content
     """
-    theshhold = 0.98
 
-    is_empty = False
+    threshold = 0.98
+    black_value_threshold = 216
+
     # create a gray histogram
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+    logging.debug('shape of image : {} shape of gray : {}'.format(image.shape, gray.shape))
 
-    # collect black and white shades
-    black_shades = hist[0:180]
-    white_shades = hist[216:256]
+    # count all pixels
+    pixel_amount = gray.shape[0] * gray.shape[1]
+    # get number of pixels < black_value_threshold
+    relevant_pixel = (gray < black_value_threshold).sum()
+    # calculate percentage of irrelevant pixels
+    irrelevant_percentage = 1 - (relevant_pixel / pixel_amount)
 
-    white_sum = 0
-    black_sum = 0
-    height, width = image.shape[:2]
-    pixel_amount = height * width
+    logging.debug('pixel total : {} pixel relevant: {} irrelevant portion: {}'.format(pixel_amount, relevant_pixel,
+                                                                                      irrelevant_percentage))
 
-    for white_shade in white_shades:
-        white_sum += white_shade[0:1][0]
-    for black_shade in black_shades:
-        black_sum += black_shade[0:1][0]
-
-    white_amount = white_sum / pixel_amount
-    black_amount = black_sum / pixel_amount
-    logging.debug("black amount: " + str(black_amount))
-    logging.debug("white amount: " + str(white_amount))
-    if white_amount > theshhold:
-        is_empty = True
-
-    logging.debug("Is patch empty: " + str(is_empty))
-    return is_empty
+    return threshold < irrelevant_percentage
 
 
 def patch_all_images():

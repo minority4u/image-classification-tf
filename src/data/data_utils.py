@@ -6,6 +6,7 @@ import sys
 import yaml
 import json
 import cv2
+
 sys.path.append(os.path.abspath("."))
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
@@ -15,16 +16,15 @@ from keras.preprocessing.image import ImageDataGenerator
 from argparse import ArgumentParser
 
 from src.utils_io import Console_and_file_logger, ensure_dir
-from src.models.predict_model import load_all_images
 from sklearn.model_selection import train_test_split
 
 global config
+global class_names
+class_names = []
 
 
 def save_images(X_train, y_train, path):
-
     for idx, image in enumerate(X_train):
-
         path_name = os.path.join(path, y_train[idx])
         ensure_dir(path_name)
         file_name = os.path.join(path_name, str(idx) + '.jpg')
@@ -33,9 +33,7 @@ def save_images(X_train, y_train, path):
         logging.debug("Writing: filename: {}".format(file_name))
 
 
-
-def create_train_test_dataset(src_path, dest_path):
-
+def split_dataset(src_path, dest_path):
     # load all images
     images = load_all_images(src_path)
 
@@ -49,43 +47,11 @@ def create_train_test_dataset(src_path, dest_path):
             y.append(label)
 
     # split images per class
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.15, random_state = 42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=42)
 
     # write split images to disk
     save_images(X_train, y_train, os.path.join(dest_path, '/train'))
     save_images(X_test, y_test, os.path.join(dest_path, '/test'))
-
-
-
-if __name__ == '__main__':
-    # Define argument parser
-    parser = ArgumentParser()
-    Console_and_file_logger('Predict_model', log_lvl=logging.DEBUG)
-
-    # define arguments and default values to parse
-    # define tha path to your config file
-    parser.add_argument("--config", "-c", help="Define the path to config.yml",
-                        default="config/experiments/inception_v3_base.yml", required=False)
-
-    parser.add_argument("--working_dir", help="Define the absolute path to the project root",
-                        default="../../", required=False)
-    # parser.add_argument("--modelskiptraining", help="Skip Training", default="None", required=False)
-
-    args = parser.parse_args()
-    logging.debug(args.config)
-    # Make sure the config exists
-    assert os.path.exists(
-        args.config), "Config does not exist {}!, Please create a config.yml in root or set the path with --config.".format(
-        args.config)
-
-    # Load config and other global objects
-    config = yaml.load(open(args.config, "r"))
-    logging.debug(json.dumps(config, indent=2))
-
-    source_root = 'data/raw/classification_data/'
-    destination_root = 'data/processed/split/'
-
-    create_train_test_dataset(source_root, destination_root)
 
 
 def __get_image_data_generator__(validation_split):
@@ -167,18 +133,6 @@ def __get_generator__(image_data_generator, path_to_data, image_size, batch_size
     return train_generator
 
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
-
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
-
 def preprocess(img):
     """
     preprocesses an Image with several options
@@ -225,3 +179,98 @@ def preprocess(img):
         img = img / 255.
 
     return img
+
+
+def sliding_window(image, stepSize, windowSize):
+    # slide a window across the image
+    for y in range(0, image.shape[0], stepSize):
+        for x in range(0, image.shape[1], stepSize):
+            # yield the current window
+            yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0]])
+
+
+def create_patches(image, slice_width, slice_height):
+    (winW, winH) = (slice_width, slice_height)
+    result = []
+    # loop over the image pyramid
+    # for resized in pyramid(image, scale=100):
+    # loop over the sliding window for each layer of the pyramid
+    for (x, y, window) in sliding_window(image, stepSize=400, windowSize=(winW, winH)):
+        # if the window does not meet our desired window size, ignore it
+        if window.shape[0] != winH or window.shape[1] != winW:
+            continue
+
+        clone = image.copy()
+        # cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
+        crop_img = clone[y:y + winW, x:x + winH]
+        result.append(crop_img)
+
+    return result
+
+
+def get_class_names():
+    return ['Etechnik', 'Fliesbilder', 'Lageplan', 'Stahlbau', 'Tabellen']
+
+
+def load_image(path='data/raw/test/Fliesbilder/image001.jpg'):
+    return cv2.imread(path)
+
+
+def load_all_images(path_to_folder='data/raw/test/'):
+    """
+    recursive function, if it is called with path to testfiles
+    it calls itself and takes the folder name as class name
+    otherwise it loads all images from the class folder.
+
+    folder should have this structure:
+    root
+        Classname
+            Images (jpg)
+    :param path_to_folder: e.g. /data/raw/test/
+    :return: list of tuples (label, list of images)
+    """
+
+    # logging.debug('load_all_images')
+    images = []
+    for file in sorted(os.listdir(path_to_folder)):
+        current_file = os.path.join(path_to_folder, file)
+        if os.path.isdir(current_file):
+            # class / label found
+            class_names.append(file)
+            images.append((file, load_all_images(current_file)))
+        # logging.debug('current file: {}'.format(current_file))
+        filename, file_extension = os.path.splitext(current_file)
+        if file_extension == '.jpg':
+            images.append(load_image(current_file))
+    return images
+
+
+if __name__ == '__main__':
+    # Define argument parser
+    parser = ArgumentParser()
+    Console_and_file_logger('Predict_model', log_lvl=logging.DEBUG)
+
+    # define arguments and default values to parse
+    # define tha path to your config file
+    parser.add_argument("--config", "-c", help="Define the path to config.yml",
+                        default="config/experiments/inception_v3_base.yml", required=False)
+
+    parser.add_argument("--working_dir", help="Define the absolute path to the project root",
+                        default="../../", required=False)
+    # parser.add_argument("--modelskiptraining", help="Skip Training", default="None", required=False)
+
+    args = parser.parse_args()
+    logging.debug(args.config)
+    # Make sure the config exists
+    assert os.path.exists(
+        args.config), "Config does not exist {}!, Please create a config.yml in root or set the path with --config.".format(
+        args.config)
+
+    # Load config and other global objects
+    config = yaml.load(open(args.config, "r"))
+    logging.debug(json.dumps(config, indent=2))
+
+    source_root = 'data/raw/classification_data/'
+    destination_root = 'data/processed/split/'
+
+    split_dataset(source_root, destination_root)

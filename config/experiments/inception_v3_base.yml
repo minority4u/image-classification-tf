@@ -1,17 +1,24 @@
+# general config
 experiment_name : 'Train_inception_v3'
+
+# paths
+data_dir : 'data/processed/train/'
+test_dir : 'data/processed/test'
+model_path : 'models/'
+report_path: 'reports/figures/'
+
+
+# training parameter
 epochs : 100
-batch_size_train : 32
+batch_size_train : 30
 batch_size_val : 30
+batch_size_test : 30
 steps_per_epoch : 75
 validation_split : 0.2
 input_image_width : 224
 input_image_height : 224
 test_split : 1
 save_after_epochs: 1
-
-data_dir : 'data/processed/transformed/'
-model_path : 'models/'
-report_path: 'reports/figures/'
 class_mode : 'categorical'
 metrics : ['accuracy']
 loss_function : 'categorical_crossentropy'

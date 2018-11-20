@@ -1,19 +1,16 @@
-import keras
+
 from keras.layers.convolutional import Convolution2D, Conv2D
-# old keras API 1.0 layers
-# from keras.layers.convolutional import Convolution2D,
-# from keras.engine.topology import merge
-# from keras.layers.pooling import MaxPooling2D
 from keras.layers.core import Dense
 from keras.layers.core import Flatten
 from keras.layers import Input, MaxPooling2D
 from keras.models import Model
+from keras.applications.vgg16 import VGG16
 from keras.regularizers import *
 from keras.layers.merge import concatenate
 import logging
 
 
-def get_model():
+def get_inception_v3_model():
     """
     Create a keras model
     :return: aliases, model
@@ -71,6 +68,30 @@ def get_model():
         logging.debug('Layer Shape: {} {}'.format(l.name, l.output_shape))
 
     return aliases, model
+
+
+
+def get_VGG_model():
+    """
+    Create a keras model
+    :return: aliases, model
+    """
+    aliases = {}
+
+    # LOAD VGG16
+    # Generate a model with all layers (with top)
+    vgg16 = VGG16(weights='imagenet', include_top=True)
+
+    # Add a layer where input is the output of the  second last layer
+    x = Dense(3, activation='softmax', name='predictions')(vgg16.layers[-2].output)
+
+    # Then create the corresponding model
+    model = Model(input=vgg16.input, output=x)
+    model.summary()
+
+    return aliases, model
+
+
 
 
 from keras.optimizers import *
