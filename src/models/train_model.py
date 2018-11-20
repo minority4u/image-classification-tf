@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath("."))
 print(sys.path)
 
 # import own lobs
-from src.models.models import *
+from src.models.model_manager import *
 from src.models.evaluate_model import evaluate_on_patch_level
 from src.data.data_utils import get_train_and_validation_generator
 from src.models.model_utils import get_callbacks

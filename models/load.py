@@ -2,7 +2,7 @@ import numpy as np
 import keras.models
 import logging
 from keras.models import model_from_json
-from src.models.v3_model import get_optimizer
+from src.models.model_manager import get_optimizer
 from scipy.misc import imread, imresize,imshow
 import tensorflow as tf
 
