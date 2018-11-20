@@ -2,33 +2,90 @@
 import click
 import logging
 import os
+import sys
+import yaml
+import json
+import cv2
+sys.path.append(os.path.abspath("."))
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import numpy as np
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
+from argparse import ArgumentParser
+
+from src.utils_io import Console_and_file_logger, ensure_dir
+from src.models.predict_model import load_all_images
+from sklearn.model_selection import train_test_split
+
+global config
+
+
+def save_images(X_train, y_train, path):
+
+    for idx, image in enumerate(X_train):
+
+        path_name = os.path.join(path, y_train[idx])
+        ensure_dir(path_name)
+        file_name = os.path.join(path_name, str(idx) + '.jpg')
+
+        cv2.imwrite(file_name, image)
+        logging.debug("Writing: filename: {}".format(file_name))
+
+
+
+def create_train_test_dataset(src_path, dest_path):
+
+    # load all images
+    images = load_all_images(src_path)
+
+    X = []
+    y = []
+
+    # transform image shapes
+    for label, images in images:
+        for image in images:
+            X.append(image)
+            y.append(label)
+
+    # split images per class
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.15, random_state = 42)
+
+    # write split images to disk
+    save_images(X_train, y_train, os.path.join(dest_path, '/train'))
+    save_images(X_test, y_test, os.path.join(dest_path, '/test'))
+
+
 
 if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+    # Define argument parser
+    parser = ArgumentParser()
+    Console_and_file_logger('Predict_model', log_lvl=logging.DEBUG)
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
+    # define arguments and default values to parse
+    # define tha path to your config file
+    parser.add_argument("--config", "-c", help="Define the path to config.yml",
+                        default="config/experiments/inception_v3_base.yml", required=False)
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
+    parser.add_argument("--working_dir", help="Define the absolute path to the project root",
+                        default="../../", required=False)
+    # parser.add_argument("--modelskiptraining", help="Skip Training", default="None", required=False)
 
+    args = parser.parse_args()
+    logging.debug(args.config)
+    # Make sure the config exists
+    assert os.path.exists(
+        args.config), "Config does not exist {}!, Please create a config.yml in root or set the path with --config.".format(
+        args.config)
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    # Load config and other global objects
+    config = yaml.load(open(args.config, "r"))
+    logging.debug(json.dumps(config, indent=2))
+
+    source_root = 'data/raw/classification_data/'
+    destination_root = 'data/processed/split/'
+
+    create_train_test_dataset(source_root, destination_root)
 
 
 def __get_image_data_generator__(validation_split):
