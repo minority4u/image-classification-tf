@@ -52,9 +52,6 @@ def save_image_slices(images):
             file_n = str(label) + str(idx)
             crop_height = height-2*margin_height
             crop_width = width-2*margin_width
-            if (crop_width < slice_width) | (crop_height < slice_height):
-                crop_img = cv2.resize(crop_width*2, crop_height*2)
-                print("Resizing image, it's too small!")
 
             slices = create_slides(crop_img, slice_width, slice_height)
             #slices = []
