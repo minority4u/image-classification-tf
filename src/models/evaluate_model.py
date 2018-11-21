@@ -35,7 +35,7 @@ def evaluate_on_patch_level(evaluation_path):
                                        config['class_mode'],
                                        'validation',
                                        shuffle=False)
-
+    logging.info("Eval path: " + evaluation_path)
     # evaluate on patch level
     predictions = model.predict_generator(test_generator, steps=None, max_queue_size=10, workers=1,
                                           use_multiprocessing=False, verbose=0)
