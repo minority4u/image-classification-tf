@@ -62,6 +62,14 @@ def predict_single_img(imgData):
     logging.debug('Max class: {}'.format(prediction_max))
     return prediction_max
 
+def external_predict_image(image, mod, gra):
+    # wrapper function to reuse the loaded model + graph
+    global model
+    global graph
+    model = mod
+    graph = gra
+    return predict_single_img(image)
+
 
 def predict_imges(images):
     predictions = [predict_single_img(image) for image in images]
@@ -73,7 +81,7 @@ def external_predict_images(images, mod, gra):
     global graph
     model = mod
     graph = gra
-    predict_imges(images)
+    return predict_imges(images)
 
 
 
