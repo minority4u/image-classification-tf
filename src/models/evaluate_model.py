@@ -25,6 +25,7 @@ import operator
 
 global model, graph
 global config
+global class_names
 class_names = get_class_names()
 
 
