@@ -10,8 +10,8 @@ from argparse import ArgumentParser
 sys.path.append(os.path.abspath("."))
 
 from src.utils_io import Console_and_file_logger, ensure_dir
-from src.models.predict_model import load_all_images
-from src.data.preprocessing import create_patches
+from src.data.data_utils import load_all_images
+from src.data.data_utils import create_patches
 
 global source_root, destination_root
 
