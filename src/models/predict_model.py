@@ -46,7 +46,9 @@ def predict_single_img(imgData):
     # class_names = config['all_target_names']
 
     logging.debug('shape original image: {}'.format(imgData.shape))
-    slices = create_patches(imgData)
+    patch_width = 600
+    patch_height = 600
+    slices = create_patches(imgData, patch_width, patch_height)
 
     for slice in slices:
         slice_predictions.append(predict_single_slice(slice))
