@@ -10,7 +10,7 @@ from models.load import init
 from src.utils_io import Console_and_file_logger
 from src.visualization.utils import create_reports
 from src.data.data_utils import load_all_images
-from src.models.predict_model import predict_imges
+from src.models.predict_model import external_predict_images
 from src.data.data_utils import __get_generator__
 from keras.preprocessing.image import ImageDataGenerator
 from scipy.misc import imsave, imread, imresize
@@ -61,8 +61,8 @@ def evaluate_on_image_level(evaluation_path):
     inference_images = load_all_images(evaluation_path)
     logging.debug('Classes found: {}'.format(len(inference_images)))
     # logging.debug('Images found: {}'.format(inference_images))
-
-    results = [(label, predict_imges(images)) for label, images in inference_images]
+    global model, graph
+    results = [(label, external_predict_images(images, model, graph)) for label, images in inference_images]
 
     logging.info(results)
 

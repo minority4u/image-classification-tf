@@ -65,6 +65,15 @@ def predict_imges(images):
     predictions = [predict_single_img(image) for image in images]
     return predictions
 
+def external_predict_images(images, mod, gra):
+    # wrapper function to reuse the loaded model + graph
+    global model
+    global graph
+    model = mod
+    graph = gra
+    predict_imges(images)
+
+
 
 if __name__ == '__main__':
     # Define argument parser
