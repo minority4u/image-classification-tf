@@ -86,6 +86,7 @@ def predict():
 	#perform inference, and return the classification
 	#get the raw data format of the image
 	imgData = request.get_data()
+	print(imgData)
 	#encode it into a suitable format
 	convertImage(imgData)
 	print("debug")
