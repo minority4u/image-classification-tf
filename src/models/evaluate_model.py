@@ -1,4 +1,3 @@
-
 import os
 import sys
 import logging
@@ -29,10 +28,7 @@ global class_names
 class_names = get_class_names()
 
 
-
-
 def evaluate_on_patch_level(evaluation_path):
-
     test_generator = __get_generator__(ImageDataGenerator(), evaluation_path,
                                        (config['input_image_width'], config['input_image_height']),
                                        config['batch_size_test'],
@@ -54,10 +50,7 @@ def evaluate_on_patch_level(evaluation_path):
     create_reports(ground_truth_max, predicted_classes, test_generator.class_indices, config)
 
 
-
-
 def evaluate_on_image_level(evaluation_path):
-
     logging.debug('Inference with: {}'.format(evaluation_path))
 
     inference_images = load_all_images(evaluation_path)
@@ -77,14 +70,13 @@ def evaluate_on_image_level(evaluation_path):
             for pred in list_of_pred:
                 test_pred.append(pred)
                 test_label.append(label)
-    logging.info("Results: "+results)
+    logging.info("Results: " + len(results))
     logging.info(test_label)
     logging.info(test_pred)
     logging.info(class_names)
     create_reports(ground_truth=test_label, predicted_classes=test_pred, class_names=class_names, config=config)
 
     logging.info(results)
-
 
 
 if __name__ == '__main__':
@@ -114,5 +106,5 @@ if __name__ == '__main__':
     model, graph = init(config)
     class_names = []
 
-    evaluate_on_image_level(config['test_dir'])
+    #evaluate_on_image_level(config['test_dir'])
     evaluate_on_patch_level(config['test_dir'])
