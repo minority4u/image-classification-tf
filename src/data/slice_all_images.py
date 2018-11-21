@@ -14,6 +14,8 @@ from src.data.data_utils import load_all_images
 from src.data.data_utils import create_patches
 
 global source_root, destination_root
+filterd_images = 0
+images = 0
 
 
 def crop_edges(image):
@@ -81,6 +83,7 @@ def create_image_patches(images):
 
             # save all patches to disk
             save_patches_to_disk(patches, path_n, file_n)
+            logging.info('created patches: {}'.format(img_count))
 
             del image
             del crop_img
