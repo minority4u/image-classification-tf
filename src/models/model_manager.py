@@ -10,13 +10,13 @@ from keras.layers.merge import concatenate
 import logging
 
 
-def get_inception_v3_model():
+def get_inception_v3_model(input_shape=(224, 224, 3)):
     """
     Create a keras model
     :return: aliases, model
     """
     aliases = {}
-    Input_1 = Input(shape=(224, 224, 3), name='Input_1')
+    Input_1 = Input(shape=input_shape, name='Input_1')
 
     Convolution2D_236 = Conv2D(name="Convolution2D_236", activation="relu",   kernel_size=(3, 3), filters=32, strides=(2, 2), padding="same")(Input_1)
     Convolution2D_235 = Conv2D(name="Convolution2D_235", activation="relu",   kernel_size=(3, 3), filters=32, padding="same")(Convolution2D_236)

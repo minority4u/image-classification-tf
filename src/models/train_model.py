@@ -43,14 +43,16 @@ def train():
                                                                                batch_size_train=config[
                                                                                    'batch_size_train'],
                                                                                batch_size_val=config['batch_size_val'],
-                                                                               class_mode=config['class_mode'])
+                                                                               class_mode=config['class_mode'],
+                                                                               color_mode = config['color_mode'])
 
     counter = Counter(train_generator.classes)
     max_val = float(max(counter.values()))
     class_weights = {class_id: max_val / num_images for class_id, num_images in counter.items()}
     logging.info('Class weights: {0}'.format(class_weights))
     # get model
-    aliases, model = get_inception_v3_model()
+    logging.info('input shape: {}'.format(config['input_shape']))
+    aliases, model = get_inception_v3_model(config['input_shape'])
 
     # compile model
     model.compile(loss=config['loss_function'],

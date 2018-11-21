@@ -34,7 +34,7 @@ from models.load import *
 # initalize our flask app
 app = Flask(__name__)
 # global vars for easy reusability
-global model, graph
+global model, graph, config
 
 # Define argument parser
 parser = ArgumentParser()
@@ -58,18 +58,19 @@ assert os.path.exists(
 params = yaml.load(open(args.config, "r"))
 # initialize these variables
 model, graph = init(params)
-
+config = params
 # neccessary for python 3
 import base64
 
 
 # decoding an image from base64 into raw representation
-def convertImage(imgData1):
-    #imgstr = re.search(b'(.*)', imgData1).group(1)
-    # print(imgstr)
-    with open('output.png', 'wb') as output:
-        # output.write(imgstr.decode('base64'))
-        output.write(base64.b64decode(imgData1))
+def convertImage(img):
+
+    if config['color_mode'] == 'grayscale':
+        return np.dot(img[...,:3], [0.299, 0.587, 0.114])
+    elif config['color_mode'] == 'rgb':
+        return img
+
 
 
 @app.route('/')
@@ -98,7 +99,10 @@ def predict():
     file = request.files['image']
     logging.debug(file)
     image = imread(file)
+    image = convertImage(image)
+
     x = image.astype(np.uint8)
+
     logging.debug(x)
 
     prediction = external_predict_image(x, model, graph)

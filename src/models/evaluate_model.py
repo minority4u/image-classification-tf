@@ -36,7 +36,8 @@ def evaluate_on_patch_level(evaluation_path):
     test_generator = test_data_gen.flow_from_directory(directory=evaluation_path,
                                       target_size=(config['input_image_width'], config['input_image_height']),
                                                        class_mode=config['class_mode'],
-                                                       shuffle=False)
+                                                       shuffle=False,
+                                                       color_mode=config['color_mode'])
 
 
     logging.info("Eval path: " + evaluation_path)
@@ -124,5 +125,5 @@ if __name__ == '__main__':
     logging.debug(json.dumps(config, indent=2))
     model, graph = init(config)
 
-    #evaluate_on_image_level(config['test_dir'])
+    evaluate_on_image_level(config['test_dir'])
     evaluate_on_patch_level(config['test_dir'])

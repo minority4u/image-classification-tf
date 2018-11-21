@@ -9,7 +9,11 @@ tensorboard_logs : 'reports/tensorboard_logs'
 report_path: 'reports/figures/'
 
 
-# training parameter
+# input parameter
+input_shape : (224, 224, 3)
+color_mode : 'grayscale'
+
+# training
 epochs : 100
 batch_size_train : 128
 batch_size_val : 30

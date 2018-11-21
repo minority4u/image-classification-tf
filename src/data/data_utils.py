@@ -74,7 +74,7 @@ def __get_image_data_generator__(validation_split):
 
 
 def get_train_and_validation_generator(path_to_data, validation_split, image_size, batch_size_train, batch_size_val,
-                                       class_mode):
+                                       class_mode, color_mode):
     """
     Returns Training and Validation Generator for Keras fit_generator usage
     :param path_to_data: Path to data directory. Subfolders describe the classes
@@ -112,7 +112,7 @@ def __get_all_images__(path_to_data, image_size, batch_size, class_mode):
     return inputs, targets
 
 
-def __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode, subset, shuffle=True):
+def __get_generator__(image_data_generator, path_to_data, image_size, batch_size, class_mode, subset, shuffle=True, color_mode='rgb'):
     """
     Get training or validation generator
     :param image_data_generator: data generator (e.g. augmentation)
@@ -129,7 +129,8 @@ def __get_generator__(image_data_generator, path_to_data, image_size, batch_size
         batch_size=batch_size,
         shuffle=shuffle,
         class_mode=class_mode,
-        subset=subset)
+        subset=subset,
+        color_mode=color_mode)
     return train_generator
 
 
@@ -201,7 +202,7 @@ def create_patches(image, slice_width, slice_height):
             continue
 
         clone = image.copy()
-        # cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
+
         crop_img = clone[y:y + winW, x:x + winH]
         result.append(crop_img)
 
@@ -213,8 +214,10 @@ def get_class_names():
 
 
 def load_image(path='data/raw/test/Fliesbilder/image001.jpg'):
-    return cv2.imread(path)
-
+    if config['color_mode'] == 'grayscale':
+        return cv2.imread(path, 0)
+    elif config['color_mode'] == 'rgb':
+        return cv2.imread(path)
 
 def load_all_images(path_to_folder='data/raw/test/'):
     """
