@@ -4,6 +4,7 @@ import itertools
 import logging
 import os
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from src.utils_io import save_plot
 
 def plot_history(history):
     """
@@ -54,7 +55,7 @@ def plot_history(history):
     plt.clf()
 
 
-def plot_confusion_matrix(cm, classes, path_to_save,
+def plot_confusion_matrix(cm, classes, path_to_save, filename,
                           normalize=False,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
@@ -92,13 +93,20 @@ def plot_confusion_matrix(cm, classes, path_to_save,
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
 
+
+
+
+
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    plt.tight_layout()
-    plt.savefig(path_to_save)
-    plt.clf()
 
-def create_reports(ground_truth, predicted_classes, class_names, config):
+    save_plot(plt.gcf(), path_to_save, filename)
+
+    #plt.tight_layout()
+    #plt.savefig(path_to_save)
+    #plt.clf()
+
+def create_reports(ground_truth, predicted_classes, class_names, config, report_name, f_name_suffix):
     """
     Create validation report (confusion matrix, train/val history)
     :param ground_truth: One-Hot encoded truth (validation_generator)
@@ -108,6 +116,7 @@ def create_reports(ground_truth, predicted_classes, class_names, config):
     :return: none
     """
     logging.info('Classes: {0}'.format(len(class_names)))
+    path_to_save = os.path.join(config['report_path'], report_name)
 
 
     target_names = class_names
@@ -119,8 +128,8 @@ def create_reports(ground_truth, predicted_classes, class_names, config):
 
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=False,
-                          title='Confusion matrix, without normalization', path_to_save=os.path.join(config['report_path'],'confusion_matrix.png'))
+                          title='Confusion matrix, without normalization', path_to_save=path_to_save, filename=f_name_suffix + '_confusion_matrix.png')
 
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=True,
-                          title='Normalized confusion matrix', path_to_save=os.path.join(config['report_path'],'confusion_matrix_normalized.png'))
+                          title='Normalized confusion matrix', path_to_save=path_to_save,filename = f_name_suffix + '_confusion_matrix_normalized.png')

@@ -18,7 +18,7 @@ def get_callbacks(config):
     callbacks.append(WeightsSaver(save_after_epochs, model_path))
     #callbacks.append(keras.callbacks.ModelCheckpoint(model_path, monitor='val_loss', verbose=0, save_best_only=False,
     #                                                save_weights_only=False, mode='auto', period=1))
-    callbacks.append(keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=config['batch_size_train'], write_graph=True,
+    callbacks.append(keras.callbacks.TensorBoard(log_dir=config['tensorboard_logs'], histogram_freq=0, batch_size=config['batch_size_train'], write_graph=True,
                                                  write_grads=False, write_images=False, embeddings_freq=0,
                                                  embeddings_layer_names=None, embeddings_metadata=None,
                                                  embeddings_data=None, update_freq='epoch'))
