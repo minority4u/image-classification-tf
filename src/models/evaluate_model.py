@@ -78,7 +78,9 @@ def evaluate_on_image_level(evaluation_path):
                 test_pred.append(pred)
                 test_label.append(label)
 
-
+    logging.info(test_label)
+    logging.info(test_pred)
+    logging.info(class_names)
     create_reports(ground_truth=test_label, predicted_classes=test_pred, class_names=class_names, config=config)
 
     logging.info(results)
