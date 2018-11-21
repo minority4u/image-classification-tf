@@ -47,7 +47,7 @@ def save_patches_to_disk(patches, path_name, file_n):
 
         # define new destination for filtered images
         if is_patch_empty(patch):
-            path_n = os.path.join(path_n, "/filtered")
+            path_n = os.path.join(path_n, "/filter/")
 
         ensure_dir(path_n)
         filename = os.path.join(path_n, patch_name)
