@@ -13,6 +13,7 @@ from src.data.data_utils import load_all_images
 from src.models.predict_model import external_predict_images
 from src.data.data_utils import __get_generator__
 from keras.preprocessing.image import ImageDataGenerator
+from src.data.data_utils import get_class_names
 from scipy.misc import imsave, imread, imresize
 import numpy as np
 from argparse import ArgumentParser
@@ -24,7 +25,7 @@ import operator
 
 global model, graph
 global config
-
+class_names = get_class_names()
 
 
 
