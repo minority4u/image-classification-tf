@@ -29,6 +29,7 @@ class_names = get_class_names()
 
 
 def evaluate_on_patch_level(evaluation_path):
+    global model, graph
     test_generator = __get_generator__(ImageDataGenerator(), evaluation_path,
                                        (config['input_image_width'], config['input_image_height']),
                                        config['batch_size_test'],
@@ -107,5 +108,5 @@ if __name__ == '__main__':
     model, graph = init(config)
     class_names = []
 
-    #evaluate_on_image_level(config['test_dir'])
+    evaluate_on_image_level(config['test_dir'])
     evaluate_on_patch_level(config['test_dir'])
