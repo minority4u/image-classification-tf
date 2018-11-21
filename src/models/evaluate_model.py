@@ -30,9 +30,13 @@ class_names = get_class_names()
 
 def evaluate_on_patch_level(evaluation_path):
     global model, graph
+    test_generator = __get_generator__(ImageDataGenerator(), evaluation_path,
+                                       (config['input_image_width'], config['input_image_height']),
+                                       config['batch_size_test'],
+                                       config['class_mode'],
+                                       'validation',
+                                       shuffle=False)
 
-    test_data_generator = ImageDataGenerator()
-    test_generator = test_data_generator.flow_from_directory(evaluation_path)
 
     logging.info("Eval path: " + evaluation_path)
     # evaluate on patch level
