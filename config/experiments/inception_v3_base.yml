@@ -11,7 +11,7 @@ report_path: 'reports/figures/'
 
 # training parameter
 epochs : 100
-batch_size_train : 30
+batch_size_train : 128
 batch_size_val : 30
 batch_size_test : 30
 steps_per_epoch : 75
