@@ -77,7 +77,7 @@ def evaluate_on_image_level(evaluation_path):
             for pred in list_of_pred:
                 test_pred.append(pred)
                 test_label.append(label)
-
+    logging.info("Results: "+results)
     logging.info(test_label)
     logging.info(test_pred)
     logging.info(class_names)
