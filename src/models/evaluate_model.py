@@ -39,6 +39,7 @@ def evaluate_on_patch_level(evaluation_path):
     # evaluate on patch level
     predictions = model.predict_generator(test_generator, steps=None, max_queue_size=10, workers=1,
                                           use_multiprocessing=False, verbose=0)
+    logging.info(predictions)
     ground_truth = test_generator.classes
     predicted_classes = np.argmax(predictions, axis=1)
 
