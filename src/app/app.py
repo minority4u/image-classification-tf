@@ -96,49 +96,17 @@ def predict():
     global model, graph
 
     file = request.files['image']
-    print(file)
+    logging.debug(file)
     image = imread(file)
     x = image.astype(np.uint8)
-    print(x)
-    #img_storage = request.files.get('image', '')
-    #print(img_storage)
-    #imgData = img_storage.read()
-    #print(imgData)
+    logging.debug(x)
 
     prediction = external_predict_image(x, model, graph)
-    print(prediction)
+    logging.debug(prediction)
     response = jsonify({'result' : str(prediction)})
-    print(response)
+    logging.debug(response)
     return response
-    #imgData = request.get_data()
 
-
-
-
-    #print(img_storage)
-    # encode it into a suitable format
-    #convertImage(imgData)
-    #print("debug")
-    # read the image into memory
-    #x = imread('output.png', mode='L')
-    # compute a bit-wise inversion so black becomes white and vice versa
-    #x = np.invert(x)
-    # make it the right size
-    #x = imresize(x, (28, 28))
-    # imshow(x)
-    # convert to a 4D tensor to feed into our model
-    # x = x.reshape(1, 224, 224, 3)
-    # print("debug2")
-    # # in our computation graph
-    # with graph.as_default():
-    #     # perform the prediction
-    #     out = model.predict(x)
-    #     # print(out)
-    #     print(np.argmax(out, axis=1))
-    #     print("debug3")
-    #     # convert the response to a string
-    #     response = np.array_str(np.argmax(out, axis=1))
-    #     return response
 
 
 if __name__ == "__main__":
