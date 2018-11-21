@@ -14,7 +14,7 @@ from src.data.data_utils import load_all_images
 from src.data.data_utils import create_patches
 
 global source_root, destination_root
-filterd_images = 0
+num_skipped_img = 0
 images = 0
 
 
@@ -41,6 +41,7 @@ def save_patches_to_disk(patches, path_name, file_n):
     :param file_n: filename (typically the image number)
     :return:
     """
+    global num_skipped_img
 
     for idy, patch in enumerate(patches):
         path_n = path_name
@@ -50,6 +51,8 @@ def save_patches_to_disk(patches, path_name, file_n):
         # define new destination for filtered images
         if is_patch_empty(patch):
             path_n = os.path.join(path_n, "/filter/")
+            num_skipped_img += 1
+
 
         ensure_dir(path_n)
         filename = os.path.join(path_n, patch_name)
@@ -89,6 +92,9 @@ def create_image_patches(images):
             del crop_img
         del image_list
     del images
+    logging.info('images: {}'.format(img_count))
+    logging.info('images skipped: {}'.format(num_skipped_img))
+
 
 
 def is_patch_empty(image):

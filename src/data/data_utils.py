@@ -3,17 +3,13 @@ import click
 import logging
 import os
 import sys
-import yaml
-import json
 import cv2
 
 sys.path.append(os.path.abspath("."))
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
 import numpy as np
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
-from argparse import ArgumentParser
+
 
 from src.utils_io import Console_and_file_logger, ensure_dir
 from sklearn.model_selection import train_test_split
@@ -32,27 +28,6 @@ def save_images(X_train, y_train, path):
 
         cv2.imwrite(file_name, image)
         logging.debug("Writing: filename: {}".format(file_name))
-
-
-# def split_dataset(src_path, dest_path):
-#     # load all images
-#     images = load_all_images(src_path)
-#
-#     X = []
-#     y = []
-#
-#     # transform image shapes
-#     for label, images in images:
-#         for image in images:
-#             X.append(image)
-#             y.append(label)
-#
-#     # split images per class
-#     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=42)
-#
-#     # write split images to disk
-#     save_images(X_train, y_train, os.path.join(dest_path, '/train'))
-#     save_images(X_test, y_test, os.path.join(dest_path, '/test'))
 
 
 def __get_image_data_generator__(validation_split):
@@ -235,6 +210,7 @@ def load_all_images(path_to_folder='data/raw/test/'):
     """
 
     # logging.debug('load_all_images')
+    global num_images
     images = []
     for file in sorted(os.listdir(path_to_folder)):
         current_file = os.path.join(path_to_folder, file)
@@ -246,7 +222,7 @@ def load_all_images(path_to_folder='data/raw/test/'):
         filename, file_extension = os.path.splitext(current_file)
         if file_extension == '.jpg':
             images.append(load_image(current_file))
-            image
+            num_images += 1
     return images
 
 
