@@ -11,7 +11,7 @@ report_path: 'reports/figures/'
 
 # input parameter
 input_shape : (224, 224, 3)
-color_mode : 'grayscale'
+color_mode : 'rgb'
 
 # training
 epochs : 100

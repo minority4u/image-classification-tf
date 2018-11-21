@@ -10,8 +10,7 @@ from argparse import ArgumentParser
 sys.path.append(os.path.abspath("."))
 
 from src.utils_io import Console_and_file_logger, ensure_dir
-from src.data.data_utils import load_all_images
-from src.data.data_utils import create_patches
+from src.data.data_utils import load_all_images, set_config, create_patches
 
 global source_root, destination_root
 num_skipped_img = 0
@@ -81,12 +80,11 @@ def create_image_patches(images):
             logging.debug("img count:" + str(img_count))
             img_count +=1
             file_n = str(label) + str(idx)
-            crop_img = crop_edges(image)
+            crop_img = image #crop_edges(image)
             patches = create_patches(crop_img, patch_width, patch_height)
 
             # save all patches to disk
             save_patches_to_disk(patches, path_n, file_n)
-            logging.info('created patches: {}'.format(img_count))
 
             del image
             del crop_img
@@ -125,6 +123,7 @@ def is_patch_empty(image):
 
 
 def patch_all_images():
+    set_config(config)
     images = load_all_images(source_root)
     create_image_patches(images)
 

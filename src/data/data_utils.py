@@ -20,6 +20,11 @@ class_names = []
 num_images = 0
 
 
+def set_config(conf):
+    global config
+    config = conf
+
+
 def save_images(X_train, y_train, path):
     for idx, image in enumerate(X_train):
         path_name = os.path.join(path, y_train[idx])
@@ -190,6 +195,7 @@ def get_class_names():
 
 
 def load_image(path='data/raw/test/Fliesbilder/image001.jpg'):
+    global config
     if config['color_mode'] == 'grayscale':
         return cv2.imread(path, 0)
     elif config['color_mode'] == 'rgb':

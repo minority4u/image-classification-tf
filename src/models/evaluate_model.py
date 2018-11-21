@@ -12,7 +12,7 @@ from src.data.data_utils import load_all_images
 from src.models.predict_model import external_predict_images
 from src.data.data_utils import __get_generator__
 from keras.preprocessing.image import ImageDataGenerator
-from src.data.data_utils import get_class_names
+from src.data.data_utils import get_class_names, set_config
 from scipy.misc import imsave, imread, imresize
 import numpy as np
 from argparse import ArgumentParser
@@ -66,7 +66,7 @@ def evaluate_on_patch_level(evaluation_path):
 
 def evaluate_on_image_level(evaluation_path):
     logging.debug('Inference with: {}'.format(evaluation_path))
-
+    set_config(config)
     inference_images = load_all_images(evaluation_path)
     logging.debug('Classes found: {}'.format(len(inference_images)))
     # logging.debug('Images found: {}'.format(inference_images))
