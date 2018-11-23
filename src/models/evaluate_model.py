@@ -47,6 +47,17 @@ def evaluate_on_patch_level(evaluation_path):
     predictions = model.predict_generator(test_generator, steps=len(test_generator), max_queue_size=10, workers=1,
                                           use_multiprocessing=False, verbose=0)
 
+    #predictions = np.argmax(predictions, axis=-1)  # multiple categories
+
+    #label_map = (test_generator.class_indices)
+    #label_map = dict((v, k) for k, v in label_map.items())  # flip k,v
+    #predicted_classes = [label_map[k] for k in predictions]
+
+
+
+
+
+
     #logging.info(predictions)
     ground_truth = test_generator.classes
     predicted_classes = np.argmax(predictions, axis=1)
@@ -58,7 +69,7 @@ def evaluate_on_patch_level(evaluation_path):
     number_of_classes = len(test_generator.class_indices)
     create_reports(ground_truth = ground_truth,
                    predicted_classes = predicted_classes,
-                   class_names = test_generator.class_indices,
+                   class_names = get_class_names(), #test_generator.class_indices,
                    config = config,
                    report_name = config['experiment_name'],
                    f_name_suffix = 'patch')
