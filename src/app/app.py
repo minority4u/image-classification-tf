@@ -105,9 +105,9 @@ def predict():
 
     logging.debug(x)
 
-    prediction = external_predict_image(x, model, graph)
+    prediction = external_predict_image(x, model, graph, config)
     logging.debug(prediction)
-    response = jsonify({'result' : str(prediction)})
+    response = jsonify({'result': str(prediction)})
     logging.debug(response)
     return response
 
