@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 global config
 global class_names
 global executor
-executor = ThreadPoolExecutor(max_workers=30)
+executor = ThreadPoolExecutor(max_workers=5)
 class_names = []
 num_images = 0
 

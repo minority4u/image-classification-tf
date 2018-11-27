@@ -3,6 +3,8 @@ import sys
 import logging
 import threading
 from concurrent.futures import ThreadPoolExecutor
+import concurrent
+import concurrent.futures as futures
 
 sys.path.append(os.path.abspath("."))
 import cv2
@@ -37,10 +39,6 @@ def predict_single_slice(image):
     graph_single = graph
     # resize and reshape with opencv
 
-    #x = imresize(image, (224, 224))
-    #x = cv2.resize(image, (224, 224))
-
-
     x = image.reshape(1, 224, 224, 3)
 
     # in our computation graph
@@ -67,6 +65,7 @@ def predict_single_img(imgData, resize=False):
     patch_width = 600
     patch_height = 600
     patches = create_patches(imgData, patch_width, patch_height, resize=resize)
+
 
     for patch in patches:
         patch_predictions.append(executor.submit(threaded_prediction, patch).result())
