@@ -24,6 +24,8 @@ global model, graph
 global config
 global class_names
 global patch_predictions
+global executor
+executor = ThreadPoolExecutor(max_workers=10)
 patch_predictions = []
 class_names = get_class_names()
 
@@ -72,27 +74,28 @@ class predict_thread(threading.Thread):
 
 #@parameter_logger
 def threaded_prediction(patch):
-    global patch_predictions
-    patch_predictions.append(predict_single_slice(patch))
+    logging.info('thread started')
+
+    return predict_single_slice(patch)
 
 @parameter_logger
 def predict_single_img(imgData, resize=False):
     # patch_predictions = []
     # class_names = config['all_target_names']
-    global threads
+    global patch_predictions
+
     logging.debug('shape original image: {}'.format(imgData.shape))
     patch_width = 600
     patch_height = 600
     patches = create_patches(imgData, patch_width, patch_height, resize=resize)
 
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    for patch in patches:
+        patch_predictions.append(executor.submit(threaded_prediction, patch).result())
 
-        for patch in patches:
-            executor.submit(threaded_prediction, patch)
 
         #patch_predictions.append(predict_single_slice(patch))
-
-
+    logging.info('threadding finished')
+    #logging.info('patches: {}'.format(len(patch_predictions)))
 
     slice_pred_names = [class_names[int(cls)] for cls in patch_predictions]
 
