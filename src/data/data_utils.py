@@ -163,28 +163,63 @@ def preprocess(img):
     return img
 
 
+def get_stride(img_size, patch_size):
+    x_count = np.ceil(1.25*(img_size[0]/patch_size[0]))
+    y_count = np.ceil(1.25*(img_size[1]/patch_size[1]))
+    x_stride = patch_size[0] - np.ceil(((patch_size[0] * x_count)-img_size[0]) / (x_count-1))
+    y_stride = patch_size[1] - np.ceil(((patch_size[1] * y_count)-img_size[1]) / (y_count-1))
+    return int(x_stride), int(y_stride)
+
+
 def sliding_window(image, stepSize, windowSize):
     # slide a window across the image
-    for y in range(0, image.shape[0], stepSize):
-        for x in range(0, image.shape[1], stepSize):
+    # stride x and stride y > 0
+    if stepSize[0] > 0 and stepSize[1] > 0:
+        for x in range(0, image.shape[0]-windowSize[0]+1, stepSize[0]):
+            for y in range(0, image.shape[1]-windowSize[1]+1, stepSize[1]):
+                # yield the current window
+                yield (x, y, image[x:x + windowSize[0], y:y + windowSize[1]])
+    # stride x > 0, stride y == 0
+    if stepSize[0] > 0 and stepSize[1] == 0:
+        for x in range(0, image.shape[0]-windowSize[0]+1, stepSize[0]):
             # yield the current window
-            yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0]])
+            yield (x, 0, image[x:x + windowSize[0], 0:0 + windowSize[1]])
+    # stride x == 0, stride y > 0
+    if stepSize[0] == 0 and stepSize[1] > 0:
+        for y in range(0, image.shape[1]-windowSize[1]+1, stepSize[1]):
+            # yield the current window
+            yield (0, y, image[0:0 + windowSize[0], y:y + windowSize[1]])
+    # stride x and stride y == 0
+    if stepSize[0] == 0 and stepSize[1] == 0:
+        yield (0, 0, image[0:0 + windowSize[0], 0:0 + windowSize[1]])
 
 
 def create_patches(image, slice_width, slice_height):
-    (winW, winH) = (slice_width, slice_height)
+    # resize image width
+    if image.shape[0] < slice_width:
+        print('resize width from: {}'.format(image.shape))
+        factor = slice_width/image.shape[0]
+        image = cv2.resize(image, (0, 0), fx=factor, fy=factor)
+        print('resize width to: {}'.format(image.shape))
+    # resize image height
+    if image.shape[1] < slice_height:
+        print('resize height from: {}'.format(image.shape))
+        factor = slice_height / image.shape[1]
+        image = cv2.resize(image, (0, 0), fx=factor, fy=factor)
+        print('resize height to: {}'.format(image.shape))
     result = []
-    # loop over the image pyramid
-    # for resized in pyramid(image, scale=100):
+    stride = get_stride(image.shape, (slice_width, slice_height))
+    print('stride: {}'.format(stride))
     # loop over the sliding window for each layer of the pyramid
-    for (x, y, window) in sliding_window(image, stepSize=400, windowSize=(winW, winH)):
+    for (x, y, window) in sliding_window(image, stepSize=stride, windowSize=(slice_width, slice_height)):
         # if the window does not meet our desired window size, ignore it
-        if window.shape[0] != winH or window.shape[1] != winW:
+        print('x: {}, y: {}, window: {}'.format(x, y, window.shape))
+        if window.shape[1] != slice_height or window.shape[0] != slice_width:
             continue
 
         clone = image.copy()
 
-        crop_img = clone[y:y + winW, x:x + winH]
+        crop_img = clone[y:y + slice_width, x:x + slice_height]
         result.append(crop_img)
 
     return result
