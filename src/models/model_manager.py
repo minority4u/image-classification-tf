@@ -83,7 +83,7 @@ def get_VGG_model():
     vgg16 = VGG16(weights='imagenet', include_top=True)
 
     # Add a layer where input is the output of the  second last layer
-    x = Dense(3, activation='softmax', name='predictions')(vgg16.layers[-2].output)
+    x = Dense(5, activation='softmax', name='predictions')(vgg16.layers[-2].output)
 
     # Then create the corresponding model
     model = Model(input=vgg16.input, output=x)
