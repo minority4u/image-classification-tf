@@ -34,6 +34,7 @@ class_names = get_class_names()
 
 @parameter_logger
 def predict_single_slice(image):
+    graph_single = graph
     # resize and reshape with opencv
 
     #x = imresize(image, (224, 224))
@@ -43,7 +44,7 @@ def predict_single_slice(image):
     x = image.reshape(1, 224, 224, 3)
 
     # in our computation graph
-    with graph.as_default():
+    with graph_single.as_default():
         # perform the prediction
         out = model.predict(x)
         # logging.debug('SinglePrediction: {}'.format(out))
