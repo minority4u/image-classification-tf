@@ -7,6 +7,13 @@
 # HTML escaping on your own to keep the application secure. Because of that Flask configures the Jinja2 template engine
 # for you automatically.
 # requests are objects that flask handles (get set post, etc)
+# system level operations (like loading files)
+import sys
+# for reading operating system data
+import os
+
+# tell our app where our saved model is
+sys.path.append(os.path.abspath("."))
 from flask import Flask, render_template, request
 from flask import jsonify
 import yaml
@@ -22,13 +29,7 @@ import re
 
 from src.models.predict_model import external_predict_image
 
-# system level operations (like loading files)
-import sys
-# for reading operating system data
-import os
 
-# tell our app where our saved model is
-sys.path.append(os.path.abspath("."))
 from models.load import *
 from time import time
 
