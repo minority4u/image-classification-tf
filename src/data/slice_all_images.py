@@ -49,7 +49,7 @@ def save_patches_to_disk(patches, path_name, file_n):
 
         # define new destination for filtered images
         if is_patch_empty(patch):
-            path_n = os.path.join(path_n, "/filter/")
+            path_n = os.path.join(path_n, "filter/")
             logging.info('Path: {}'.format(path_n))
             num_skipped_img += 1
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     config = yaml.load(open(args.config, "r"))
     logging.debug(json.dumps(config, indent=2))
 
-    source_root = 'data/raw/classification_data/'
+    source_root = 'data/raw/test/'
     destination_root = 'data/processed/transformed/'
 
     patch_all_images()
