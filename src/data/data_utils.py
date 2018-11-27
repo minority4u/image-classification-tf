@@ -197,23 +197,23 @@ def sliding_window(image, stepSize, windowSize):
 def create_patches(image, slice_width, slice_height):
     # resize image width
     if image.shape[0] < slice_width:
-        print('resize width from: {}'.format(image.shape))
+        logging.debug('resize width from: {}'.format(image.shape))
         factor = slice_width/image.shape[0]
         image = cv2.resize(image, (0, 0), fx=factor, fy=factor)
-        print('resize width to: {}'.format(image.shape))
+        logging.debug('resize width to: {}'.format(image.shape))
     # resize image height
     if image.shape[1] < slice_height:
-        print('resize height from: {}'.format(image.shape))
+        logging.debug('resize height from: {}'.format(image.shape))
         factor = slice_height / image.shape[1]
         image = cv2.resize(image, (0, 0), fx=factor, fy=factor)
-        print('resize height to: {}'.format(image.shape))
+        logging.debug('resize height to: {}'.format(image.shape))
     result = []
     stride = get_stride(image.shape, (slice_width, slice_height))
-    print('stride: {}'.format(stride))
+    logging.debug('stride: {}'.format(stride))
     # loop over the sliding window for each layer of the pyramid
     for (x, y, window) in sliding_window(image, stepSize=stride, windowSize=(slice_width, slice_height)):
         # if the window does not meet our desired window size, ignore it
-        print('x: {}, y: {}, window: {}'.format(x, y, window.shape))
+        logging.debug('x: {}, y: {}, window: {}'.format(x, y, window.shape))
         if window.shape[1] != slice_height or window.shape[0] != slice_width:
             continue
 
@@ -235,6 +235,7 @@ def load_image(path='data/raw/test/Fliesbilder/image001.jpg'):
         return cv2.imread(path, 0)
     elif config['color_mode'] == 'rgb':
         return cv2.imread(path)
+
 
 def load_all_images(path_to_folder='data/raw/test/'):
     """
