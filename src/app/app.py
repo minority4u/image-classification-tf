@@ -30,6 +30,7 @@ import os
 # tell our app where our saved model is
 sys.path.append(os.path.abspath("."))
 from models.load import *
+from time import time
 
 # initalize our flask app
 app = Flask(__name__)
@@ -105,9 +106,10 @@ def predict():
 
     logging.debug(x)
 
+    t1 = time()
     prediction = external_predict_image(x, model, graph, config)
     logging.debug(prediction)
-    response = jsonify({'result': str(prediction)})
+    response = jsonify({'result': str(prediction), 'time': str(time()-t1)})
     logging.debug(response)
     return response
 
