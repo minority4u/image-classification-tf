@@ -211,7 +211,7 @@ def create_patches(image, slice_width, slice_height):
     stride = get_stride(image.shape, (slice_width, slice_height))
     logging.debug('stride: {}'.format(stride))
     # loop over the sliding window for each layer of the pyramid
-    for (x, y, window) in sliding_window(image, stepSize=stride, windowSize=(slice_width, slice_height)):
+    for (y, x, window) in sliding_window(image, stepSize=stride, windowSize=(slice_width, slice_height)):
         # if the window does not meet our desired window size, ignore it
         logging.debug('x: {}, y: {}, window: {}'.format(x, y, window.shape))
         if window.shape[1] != slice_height or window.shape[0] != slice_width:
