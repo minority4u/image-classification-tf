@@ -9,6 +9,7 @@ sys.path.append(os.path.abspath("."))
 import numpy as np
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
+from concurrent.futures import ThreadPoolExecutor
 
 
 from src.utils_io import Console_and_file_logger, ensure_dir, parameter_logger
@@ -16,6 +17,8 @@ from sklearn.model_selection import train_test_split
 
 global config
 global class_names
+global executor
+executor = ThreadPoolExecutor(max_workers=30)
 class_names = []
 num_images = 0
 
@@ -162,7 +165,7 @@ def preprocess(img):
 
     return img
 
-@parameter_logger
+#@parameter_logger
 def get_stride(img_size, patch_size):
     x_count = np.ceil(1.25*(img_size[0]/patch_size[0]))
     y_count = np.ceil(1.25*(img_size[1]/patch_size[1]))
@@ -170,7 +173,7 @@ def get_stride(img_size, patch_size):
     y_stride = patch_size[1] - np.ceil(((patch_size[1] * y_count)-img_size[1]) / (y_count-1))
     return int(x_stride), int(y_stride)
 
-@parameter_logger
+#@parameter_logger
 def sliding_window(image, stepSize, windowSize):
     # slide a window across the image
     # stride x and stride y > 0
@@ -193,7 +196,7 @@ def sliding_window(image, stepSize, windowSize):
     if stepSize[0] == 0 and stepSize[1] == 0:
         yield (0, 0, image[0:0 + windowSize[0], 0:0 + windowSize[1]])
 
-@parameter_logger
+#@parameter_logger
 def create_patches(image, slice_width, slice_height, resize=False):
     # resize image width
     if image.shape[0] < slice_width:
@@ -217,15 +220,27 @@ def create_patches(image, slice_width, slice_height, resize=False):
         if window.shape[1] != slice_height or window.shape[0] != slice_width:
             continue
 
-        clone = image.copy()
-
-        crop_img = clone[y:y + slice_width, x:x + slice_height]
-        if resize:
-            result.append(cv2.resize(crop_img, (224, 224)))
-        else:
-            result.append(crop_img)
+        result.append(executor.submit(threaded_resize, image, y, x, slice_width, slice_height, resize).result())
+        # clone = image.copy()
+        #
+        # crop_img = clone[y:y + slice_width, x:x + slice_height]
+        # if resize:
+        #     result.append(cv2.resize(crop_img, (224, 224)))
+        # else:
+        #     result.append(crop_img)
 
     return result
+
+
+def threaded_resize(image, y, x, slice_width, slice_height, resize=False):
+    clone = image.copy()
+
+    crop_img = clone[y:y + slice_width, x:x + slice_height]
+    if resize:
+        return cv2.resize(crop_img, (224, 224))
+    else:
+        return crop_img
+
 
 
 def get_class_names():
