@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath("."))
 import cv2
 from src.data.data_utils import create_patches, load_image
 from models.load import init
-from src.utils_io import Console_and_file_logger
+from src.utils_io import Console_and_file_logger, parameter_logger
 from src.visualization.utils import create_reports
 from src.data.data_utils import get_class_names
 from scipy.misc import imsave, imread, imresize
@@ -26,7 +26,7 @@ class_names = get_class_names()
 
 
 
-
+@parameter_logger
 def predict_single_slice(image):
     # resize and reshape with opencv
 
@@ -44,7 +44,7 @@ def predict_single_slice(image):
         prediction = np.argmax(out, axis=1)
         return prediction
 
-
+@parameter_logger
 def predict_single_img(imgData, resize=False):
     patch_predictions = []
     # class_names = config['all_target_names']
@@ -66,6 +66,7 @@ def predict_single_img(imgData, resize=False):
     logging.debug('Max class: {}'.format(prediction_max))
     return prediction_max
 
+@parameter_logger
 def external_predict_image(image, mod, gra, conf, resize=False):
     # wrapper function to reuse the loaded model + graph
     global model

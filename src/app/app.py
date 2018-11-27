@@ -19,6 +19,7 @@ from flask import jsonify
 import yaml
 from imageio import imread
 from argparse import ArgumentParser
+from src.utils_io import parameter_logger, Console_and_file_logger
 # scientific computing library for saving, reading, and resizing images
 from scipy.misc import imsave, imread, imresize
 import numpy as np
@@ -32,6 +33,10 @@ from src.models.predict_model import external_predict_image
 
 from models.load import *
 from time import time
+# Define central logger, set name and logging level
+Console_and_file_logger(logfile_name='app', log_lvl="INFO")
+
+
 
 # initalize our flask app
 app = Flask(__name__)
@@ -66,6 +71,7 @@ import base64
 
 
 # decoding an image from base64 into raw representation
+@parameter_logger
 def convertImage(img):
 
     if config['color_mode'] == 'grayscale':
@@ -89,7 +95,7 @@ def update_model():
     model, graph = init()
     return jsonify({'update model': 'success'})
 
-
+@parameter_logger
 @app.route('/predict/', methods=['POST'])
 def predict():
     # whenever the predict method is called, we're going

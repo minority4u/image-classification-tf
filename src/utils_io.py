@@ -105,7 +105,8 @@ def parameter_logger(func):
         logging.debug('Args: {}, Kwargs'.format(*args, **kwargs))
         res = func(*args, **kwargs)
         logging.debug(res)
-        logging.debug("{} done in {:0.3f}s.".format(func.__name__, time() - t1))
+        logging.info("{} done in {:0.3f}s.".format(func.__name__, time() - t1))
         return res
 
     return function_wrapper
+

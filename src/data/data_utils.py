@@ -11,7 +11,7 @@ from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 
 
-from src.utils_io import Console_and_file_logger, ensure_dir
+from src.utils_io import Console_and_file_logger, ensure_dir, parameter_logger
 from sklearn.model_selection import train_test_split
 
 global config
@@ -162,7 +162,7 @@ def preprocess(img):
 
     return img
 
-
+@parameter_logger
 def get_stride(img_size, patch_size):
     x_count = np.ceil(1.25*(img_size[0]/patch_size[0]))
     y_count = np.ceil(1.25*(img_size[1]/patch_size[1]))
@@ -170,7 +170,7 @@ def get_stride(img_size, patch_size):
     y_stride = patch_size[1] - np.ceil(((patch_size[1] * y_count)-img_size[1]) / (y_count-1))
     return int(x_stride), int(y_stride)
 
-
+@parameter_logger
 def sliding_window(image, stepSize, windowSize):
     # slide a window across the image
     # stride x and stride y > 0
@@ -193,7 +193,7 @@ def sliding_window(image, stepSize, windowSize):
     if stepSize[0] == 0 and stepSize[1] == 0:
         yield (0, 0, image[0:0 + windowSize[0], 0:0 + windowSize[1]])
 
-
+@parameter_logger
 def create_patches(image, slice_width, slice_height, resize=False):
     # resize image width
     if image.shape[0] < slice_width:
