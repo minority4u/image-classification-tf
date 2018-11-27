@@ -220,7 +220,7 @@ def create_patches(image, slice_width, slice_height):
         clone = image.copy()
 
         crop_img = clone[y:y + slice_width, x:x + slice_height]
-        result.append(crop_img)
+        result.append(cv2.resize(crop_img, (224, 224)))
 
     return result
 
