@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 import threading
-import concurrent.futures.ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 sys.path.append(os.path.abspath("."))
 import cv2
@@ -85,19 +85,14 @@ def predict_single_img(imgData, resize=False):
     patch_height = 600
     patches = create_patches(imgData, patch_width, patch_height, resize=resize)
 
+    with ThreadPoolExecutor(max_workers=5) as executor:
 
-
-
-    for idx, patch in enumerate(patches):
-
-        thread = predict_thread(idx, 'Thread' + str(idx), idx, patch)
-        thread.start()
-        threads.append(thread)
+        for patch in patches:
+            executor.submit(threaded_prediction, patch)
 
         #patch_predictions.append(predict_single_slice(patch))
 
-    for t in threads:
-        t.join()
+
 
     slice_pred_names = [class_names[int(cls)] for cls in patch_predictions]
 
