@@ -108,7 +108,7 @@ def predict():
     logging.debug(x)
 
     t1 = time()
-    prediction = external_predict_image(x, model, graph, config)
+    prediction = external_predict_image(x, model, graph, config, resize=True)
     logging.debug(prediction)
     response = jsonify({'result': str(prediction), 'time': str(time()-t1)})
     logging.debug(response)
