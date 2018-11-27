@@ -29,7 +29,13 @@ class_names = get_class_names()
 
 def predict_single_slice(image):
     # resize and reshape with opencv
-    x = imresize(image, (224, 224))
+
+    factor_x = image.shape[0] / 224
+    factor_y = image.shape[1] / 224
+    #x = imresize(image, (224, 224))
+    x = cv2.resize(image, (0,0), fx=factor_x, fy=factor_y)
+
+
     x = x.reshape(1, 224, 224, 3)
 
     # in our computation graph
