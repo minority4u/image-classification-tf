@@ -42,16 +42,12 @@ def evaluate_on_patch_level(evaluation_path):
 
     logging.info("Eval path: " + evaluation_path)
     # evaluate on patch level
-    print(config)
-    print(type(model))
+    logging.debug(config)
+    logging.debug(type(model))
     predictions = model.predict_generator(test_generator, steps=len(test_generator), max_queue_size=10, workers=1,
                                           use_multiprocessing=False, verbose=0)
 
     #predictions = np.argmax(predictions, axis=-1)  # multiple categories
-
-    #label_map = (test_generator.class_indices)
-    #label_map = dict((v, k) for k, v in label_map.items())  # flip k,v
-    #predicted_classes = [label_map[k] for k in predictions]
 
 
 
