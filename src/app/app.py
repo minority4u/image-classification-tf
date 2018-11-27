@@ -36,8 +36,6 @@ from time import time
 # Define central logger, set name and logging level
 Console_and_file_logger(logfile_name='app', log_lvl="INFO")
 
-
-
 # initalize our flask app
 app = Flask(__name__)
 # global vars for easy reusability
@@ -65,6 +63,7 @@ assert os.path.exists(
 params = yaml.load(open(args.config, "r"))
 # initialize these variables
 model, graph = init(params)
+
 config = params
 # neccessary for python 3
 import base64

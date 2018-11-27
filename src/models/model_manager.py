@@ -63,6 +63,7 @@ def get_inception_v3_model(input_shape=(224, 224, 3)):
     Dense_2 = Dense(name="Dense_2", activation="softmax", units=5)(Dense_14)
 
     model = Model([Input_1], [Dense_2])
+    model._make_predict_function()
 
     for l in model.layers:
         logging.debug('Layer Shape: {} {}'.format(l.name, l.output_shape))

@@ -1,6 +1,8 @@
 import os
 import sys
 import logging
+import threading
+import concurrent.futures.ThreadPoolExecutor
 
 sys.path.append(os.path.abspath("."))
 import cv2
@@ -21,6 +23,8 @@ import operator
 global model, graph
 global config
 global class_names
+global patch_predictions
+patch_predictions = []
 class_names = get_class_names()
 
 
@@ -44,18 +48,56 @@ def predict_single_slice(image):
         prediction = np.argmax(out, axis=1)
         return prediction
 
+
+threadLock = threading.Lock()
+global threads
+threads = []
+
+
+class predict_thread(threading.Thread):
+    def __init__(self, threadID, name, counter, patch):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+        self.patch = patch
+
+    def run(self):
+        print("Starting " + self.name)
+        # Get lock to synchronize threads
+        threadLock.acquire()
+        threaded_prediction(patch=self.patch)
+        # Free lock to release next thread
+        threadLock.release()
+
+#@parameter_logger
+def threaded_prediction(patch):
+    global patch_predictions
+    patch_predictions.append(predict_single_slice(patch))
+
 @parameter_logger
 def predict_single_img(imgData, resize=False):
-    patch_predictions = []
+    # patch_predictions = []
     # class_names = config['all_target_names']
-
+    global threads
     logging.debug('shape original image: {}'.format(imgData.shape))
     patch_width = 600
     patch_height = 600
     patches = create_patches(imgData, patch_width, patch_height, resize=resize)
 
-    for patch in patches:
-        patch_predictions.append(predict_single_slice(patch))
+
+
+
+    for idx, patch in enumerate(patches):
+
+        thread = predict_thread(idx, 'Thread' + str(idx), idx, patch)
+        thread.start()
+        threads.append(thread)
+
+        #patch_predictions.append(predict_single_slice(patch))
+
+    for t in threads:
+        t.join()
 
     slice_pred_names = [class_names[int(cls)] for cls in patch_predictions]
 
