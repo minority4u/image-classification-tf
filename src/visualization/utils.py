@@ -5,6 +5,7 @@ import logging
 import os
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from src.utils_io import save_plot
+from collections import Counter
 
 def plot_history(history):
     """
@@ -120,10 +121,13 @@ def create_reports(ground_truth, predicted_classes, class_names, config, report_
 
 
     target_names = class_names
+    counter = Counter(target_names)
+    max_val = float(max(counter.values()))
+    class_weights = {class_id: max_val / num_images for class_id, num_images in counter.items()}
 
-    cm = confusion_matrix(ground_truth, predicted_classes)
+    cm = confusion_matrix(y_true=ground_truth, y_pred=predicted_classes, sample_weight=class_weights)
 
-    logging.info('\n' + classification_report(ground_truth, predicted_classes, target_names=target_names))
+    logging.info('\n' + classification_report(y_true=ground_truth, y_pred=predicted_classes, target_names=target_names, sample_weight=class_weights))
     logging.info('Accuracy: {}'.format(accuracy_score(ground_truth, predicted_classes)))
 
     plt.figure()
