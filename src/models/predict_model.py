@@ -45,14 +45,14 @@ def predict_single_slice(image):
         return prediction
 
 
-def predict_single_img(imgData):
+def predict_single_img(imgData, resize=False):
     patch_predictions = []
     # class_names = config['all_target_names']
 
     logging.debug('shape original image: {}'.format(imgData.shape))
     patch_width = 600
     patch_height = 600
-    patches = create_patches(imgData, patch_width, patch_height)
+    patches = create_patches(imgData, patch_width, patch_height, resize=resize)
 
     for patch in patches:
         patch_predictions.append(predict_single_slice(patch))
@@ -66,7 +66,7 @@ def predict_single_img(imgData):
     logging.debug('Max class: {}'.format(prediction_max))
     return prediction_max
 
-def external_predict_image(image, mod, gra, conf):
+def external_predict_image(image, mod, gra, conf, resize=False):
     # wrapper function to reuse the loaded model + graph
     global model
     global graph
@@ -74,14 +74,14 @@ def external_predict_image(image, mod, gra, conf):
     config = conf
     model = mod
     graph = gra
-    return predict_single_img(image)
+    return predict_single_img(image, resize=resize)
 
 
-def predict_imges(images):
-    predictions = [predict_single_img(image) for image in images]
+def predict_imges(images, resize=False):
+    predictions = [predict_single_img(image, resize=resize) for image in images]
     return predictions
 
-def external_predict_images(images, mod, gra, conf):
+def external_predict_images(images, mod, gra, conf, resize=False):
     # wrapper function to reuse the loaded model + graph
     global model
     global graph
@@ -89,7 +89,7 @@ def external_predict_images(images, mod, gra, conf):
     config = conf
     model = mod
     graph = gra
-    return predict_imges(images)
+    return predict_imges(images, resize=resize)
 
 
 

@@ -194,7 +194,7 @@ def sliding_window(image, stepSize, windowSize):
         yield (0, 0, image[0:0 + windowSize[0], 0:0 + windowSize[1]])
 
 
-def create_patches(image, slice_width, slice_height):
+def create_patches(image, slice_width, slice_height, resize=False):
     # resize image width
     if image.shape[0] < slice_width:
         logging.debug('resize width from: {}'.format(image.shape))
@@ -220,7 +220,10 @@ def create_patches(image, slice_width, slice_height):
         clone = image.copy()
 
         crop_img = clone[y:y + slice_width, x:x + slice_height]
-        result.append(cv2.resize(crop_img, (224, 224)))
+        if resize:
+            result.append(cv2.resize(crop_img, (224, 224)))
+        else:
+            result.append(crop_img)
 
     return result
 
