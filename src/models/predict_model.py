@@ -25,14 +25,14 @@ global config
 global class_names
 global patch_predictions
 global executor
-executor = ThreadPoolExecutor(max_workers=10)
+executor = ThreadPoolExecutor(max_workers=3)
 patch_predictions = []
 class_names = get_class_names()
 
 
 
 
-@parameter_logger
+#@parameter_logger
 def predict_single_slice(image):
     graph_single = graph
     # resize and reshape with opencv
@@ -52,34 +52,12 @@ def predict_single_slice(image):
         return prediction
 
 
-threadLock = threading.Lock()
-global threads
-threads = []
-
-
-class predict_thread(threading.Thread):
-    def __init__(self, threadID, name, counter, patch):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.counter = counter
-        self.patch = patch
-
-    def run(self):
-        print("Starting " + self.name)
-        # Get lock to synchronize threads
-        threadLock.acquire()
-        threaded_prediction(patch=self.patch)
-        # Free lock to release next thread
-        threadLock.release()
 
 #@parameter_logger
 def threaded_prediction(patch):
-    logging.info('thread started')
-
     return predict_single_slice(patch)
 
-@parameter_logger
+#@parameter_logger
 def predict_single_img(imgData, resize=False):
     # patch_predictions = []
     # class_names = config['all_target_names']
@@ -93,11 +71,6 @@ def predict_single_img(imgData, resize=False):
     for patch in patches:
         patch_predictions.append(executor.submit(threaded_prediction, patch).result())
 
-
-        #patch_predictions.append(predict_single_slice(patch))
-    logging.info('threadding finished')
-    #logging.info('patches: {}'.format(len(patch_predictions)))
-
     slice_pred_names = [class_names[int(cls)] for cls in patch_predictions]
 
     counter = Counter(slice_pred_names)
@@ -107,7 +80,7 @@ def predict_single_img(imgData, resize=False):
     logging.debug('Max class: {}'.format(prediction_max))
     return prediction_max
 
-@parameter_logger
+#@parameter_logger
 def external_predict_image(image, mod, gra, conf, resize=False):
     # wrapper function to reuse the loaded model + graph
     global model

@@ -94,7 +94,7 @@ def update_model():
     model, graph = init()
     return jsonify({'update model': 'success'})
 
-@parameter_logger
+#@parameter_logger
 @app.route('/predict/', methods=['POST'])
 def predict():
     # whenever the predict method is called, we're going
