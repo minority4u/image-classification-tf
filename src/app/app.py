@@ -20,6 +20,7 @@ import yaml
 from imageio import imread
 from argparse import ArgumentParser
 from src.utils_io import parameter_logger, Console_and_file_logger
+from src.models.Result import PatchResult, ImageResult, Result
 # scientific computing library for saving, reading, and resizing images
 from scipy.misc import imsave, imread, imresize
 import numpy as np
@@ -28,7 +29,7 @@ import keras.models
 # for regular expressions, saves time dealing with string data
 import re
 
-from src.models.predict_model import external_predict_image
+from src.models.predict_model import external_predict_images
 
 
 from models.load import *
@@ -113,8 +114,10 @@ def predict():
     logging.debug(x)
 
     t1 = time()
-    prediction = external_predict_image(x, model, graph, config, resize=True)
-    logging.debug(prediction)
+    result = Result(external_predict_images([x], '', model, graph, config, resize=True))
+    logging.debug(result)
+    prediction = result.get_image_results_as_class_name()
+
     response = jsonify({'result': str(prediction), 'time': str(time()-t1)})
     logging.debug(response)
     return response
