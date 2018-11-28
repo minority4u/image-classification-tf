@@ -3,8 +3,7 @@ experiment_name : 'Train_inception_v3'
 
 # paths
 data_dir : 'data/processed/Train_Patches/'
-test_dir_patch : 'data/processed/test_patches/'
-test_dir_image : 'data/processed/test_images/'
+test_dir_image : 'data/raw/test_images/'
 model_path : 'models/'
 tensorboard_logs : 'reports/tensorboard_logs'
 report_path: 'reports/figures/'
@@ -28,4 +27,4 @@ save_after_epochs: 1
 class_mode : 'categorical'
 metrics : ['accuracy']
 loss_function : 'categorical_crossentropy'
-all_target_names : ['Etechnik', 'Fliesbilder', 'Tabellen', 'Lageplan', 'Stahlbau']
+all_target_names : ['Etechnik', 'Fliesbilder', 'Lageplan', 'Stahlbau', 'Tabellen']

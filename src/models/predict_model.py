@@ -18,6 +18,7 @@ import numpy as np
 from argparse import ArgumentParser
 import yaml
 import json
+from src.models.Result import PatchResult, ImageResult, Result
 
 from collections import Counter
 import operator
@@ -35,7 +36,7 @@ class_names = get_class_names()
 
 
 #@parameter_logger
-def predict_single_slice(image):
+def predict_single_patch(image, label):
     graph_single = graph
     # resize and reshape with opencv
     if image.shape[0] != 224 or image.shape[1] != 224:
@@ -46,62 +47,39 @@ def predict_single_slice(image):
     # in our computation graph
     with graph_single.as_default():
         # perform the prediction
-        out = model.predict(x)
-        # logging.debug('SinglePrediction: {}'.format(out))
-        prediction = np.argmax(out, axis=1)
-        return prediction
+        p_prediction = model.predict(x)
+
+        return PatchResult(class_prob = p_prediction, ground_truth = label)
 
 
 
 #@parameter_logger
-def threaded_prediction(patch):
-    return predict_single_slice(patch)
+def threaded_prediction(patch, label):
+    return predict_single_patch(patch, label)
 
 #@parameter_logger
-def predict_single_img(imgData, resize=False):
-    # patch_predictions = []
-    # class_names = config['all_target_names']
+def predict_single_img(imgData, label, resize=False):
+
     global patch_predictions
     patch_predictions = []
 
-    try:
-        logging.debug('shape original image: {}'.format(imgData.shape))
-    except Exception as e:
-        logging.debug('ImageData in wrong format: {}'.format(imgData))
+    # TODO: in config?
     patch_width = 600
     patch_height = 600
     patches = create_patches(imgData, patch_width, patch_height, resize=resize)
 
-
     for patch in patches:
-        patch_predictions.append(executor.submit(threaded_prediction, patch).result())
+        patch_predictions.append(executor.submit(threaded_prediction, patch, label).result())
 
-    slice_pred_names = [class_names[int(cls)] for cls in patch_predictions]
-
-    counter = Counter(slice_pred_names)
-    logging.debug('Classes: {}'.format(counter))
-
-    prediction_max = max(counter.items(), key=operator.itemgetter(1))[0]
-    logging.debug('Max class: {}'.format(prediction_max))
-    return prediction_max
-
-#@parameter_logger
-def external_predict_image(image, mod, gra, conf, resize=False):
-    # wrapper function to reuse the loaded model + graph
-    global model
-    global graph
-    global config
-    config = conf
-    model = mod
-    graph = gra
-    return predict_single_img(image, resize=resize)
+    return ImageResult(patch_predictions)
 
 
-def predict_imges(images, resize=False):
-    predictions = [predict_single_img(image, resize=resize) for image in images]
+
+def predict_imges(images, label, resize=False):
+    predictions = [predict_single_img(image, label, resize=resize) for image in images]
     return predictions
 
-def external_predict_images(images, mod, gra, conf, resize=False):
+def external_predict_images(images, label, mod, gra, conf, resize=False):
     # wrapper function to reuse the loaded model + graph
     global model
     global graph
@@ -109,7 +87,7 @@ def external_predict_images(images, mod, gra, conf, resize=False):
     config = conf
     model = mod
     graph = gra
-    return predict_imges(images, resize=resize)
+    return predict_imges(images=images, label=label, resize=resize)
 
 
 
