@@ -132,5 +132,5 @@ if __name__ == '__main__':
     logging.debug(json.dumps(config, indent=2))
     model, graph = init(config)
 
-    evaluate_on_image_level(config['test_dir'])
-    evaluate_on_patch_level(config['test_dir'])
+    evaluate_on_image_level(config['test_dir_image'])
+    evaluate_on_patch_level(config['test_dir_patche'])

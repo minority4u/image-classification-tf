@@ -3,7 +3,8 @@ experiment_name : 'Train_inception_v3'
 
 # paths
 data_dir : 'data/processed/Train_Patches/'
-test_dir : 'data/processed/Test_Patches_small/'
+test_dir_patch : 'data/processed/test_patches/'
+test_dir_image : 'data/processed/test_images/'
 model_path : 'models/'
 tensorboard_logs : 'reports/tensorboard_logs'
 report_path: 'reports/figures/'

@@ -63,7 +63,7 @@ def predict_single_img(imgData, resize=False):
     # class_names = config['all_target_names']
     global patch_predictions
     patch_predictions = []
-    logging.debug()
+
     try:
         logging.debug('shape original image: {}'.format(imgData.shape))
     except Exception as e:
