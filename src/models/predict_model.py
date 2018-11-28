@@ -38,7 +38,7 @@ class_names = get_class_names()
 def predict_single_slice(image):
     graph_single = graph
     # resize and reshape with opencv
-    if image.shape[0] != 224 or image[1] != 224:
+    if image.shape[0] != 224 or image.shape[1] != 224:
         image = cv2.resize(image, (224, 224))
 
     x = image.reshape(1, 224, 224, 3)
@@ -62,8 +62,11 @@ def predict_single_img(imgData, resize=False):
     # patch_predictions = []
     # class_names = config['all_target_names']
     global patch_predictions
-
-    logging.debug('shape original image: {}'.format(imgData.shape))
+    logging.debug()
+    try:
+        logging.debug('shape original image: {}'.format(imgData.shape))
+    except Exception as e:
+        logging.debug('ImageData in wrong format: {}'.format(imgData))
     patch_width = 600
     patch_height = 600
     patches = create_patches(imgData, patch_width, patch_height, resize=resize)
