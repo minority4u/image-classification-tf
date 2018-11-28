@@ -38,6 +38,8 @@ class_names = get_class_names()
 def predict_single_slice(image):
     graph_single = graph
     # resize and reshape with opencv
+    if image.shape[0] != 224 or image[1] != 224:
+        image = cv2.resize(image, (224, 224))
 
     x = image.reshape(1, 224, 224, 3)
 

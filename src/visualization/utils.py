@@ -4,6 +4,7 @@ import itertools
 import logging
 import os
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.utils.class_weight import compute_sample_weight
 from src.utils_io import save_plot
 from collections import Counter
 
@@ -87,7 +88,7 @@ def plot_confusion_matrix(cm, classes, path_to_save, filename,
     plt.xticks(tick_marks, classes, rotation=45)
     plt.yticks(tick_marks, classes)
 
-    fmt = '.2f' if normalize else 'd'
+    fmt = '.2f' if normalize else '.2f'
     thresh = cm.max() / 2.
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, format(cm[i, j], fmt),
@@ -121,14 +122,24 @@ def create_reports(ground_truth, predicted_classes, class_names, config, report_
 
 
     target_names = class_names
-    counter = Counter(target_names)
+
+    counter = Counter(ground_truth)
     max_val = float(max(counter.values()))
-    class_weights = {class_id: max_val / num_images for class_id, num_images in counter.items()}
+    #class_weights = {class_id: max_val / num_images for class_id, num_images in counter.items()}
+
+    class_weights = compute_sample_weight(class_weight='balanced', y=ground_truth)
+
+    logging.info('ground truth: {}'.format(len(ground_truth)))
+    logging.info('ground truth: {}'.format(ground_truth))
+    logging.info('predict classes: {}'.format(len(predicted_classes)))
+    logging.info('predict classes: {}'.format(predicted_classes))
+    logging.info('class weights: {}'.format(len(class_weights)))
+    logging.info(class_weights)
 
     cm = confusion_matrix(y_true=ground_truth, y_pred=predicted_classes, sample_weight=class_weights)
 
     logging.info('\n' + classification_report(y_true=ground_truth, y_pred=predicted_classes, target_names=target_names, sample_weight=class_weights))
-    logging.info('Accuracy: {}'.format(accuracy_score(ground_truth, predicted_classes)))
+    logging.info('Accuracy: {}'.format(accuracy_score(y_true=ground_truth, y_pred=predicted_classes, sample_weight=class_weights)))
 
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=False,

@@ -78,7 +78,7 @@ def evaluate_on_image_level(evaluation_path):
     logging.debug('Classes found: {}'.format(len(inference_images)))
     # logging.debug('Images found: {}'.format(inference_images))
     global model, graph, class_names
-    results = [(label, external_predict_images(images, model, graph, conf=config, resize=True)) for label, images in inference_images]
+    results = [(label, external_predict_images(images, model, graph, conf=config, resize=False)) for label, images in inference_images]
 
     #logging.info(results)
 
