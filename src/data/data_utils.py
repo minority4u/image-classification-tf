@@ -197,33 +197,33 @@ def sliding_window(image, stepSize, windowSize):
         yield (0, 0, image[0:0 + windowSize[0], 0:0 + windowSize[1]])
 
 #@parameter_logger
-def create_patches(image, slice_width, slice_height, resize=False):
+def create_patches(image, patch_width, patch_height, resize=False):
     # resize image width
-    if image.shape[0] < slice_width:
+    if image.shape[0] < patch_width:
         logging.debug('resize width from: {}'.format(image.shape))
-        factor = slice_width/image.shape[0]
+        factor = patch_width/image.shape[0]
         image = cv2.resize(image, (0, 0), fx=factor, fy=factor)
         logging.debug('resize width to: {}'.format(image.shape))
     # resize image height
-    if image.shape[1] < slice_height:
+    if image.shape[1] < patch_height:
         logging.debug('resize height from: {}'.format(image.shape))
-        factor = slice_height / image.shape[1]
+        factor = patch_height / image.shape[1]
         image = cv2.resize(image, (0, 0), fx=factor, fy=factor)
         logging.debug('resize height to: {}'.format(image.shape))
     result = []
-    stride = get_stride(image.shape, (slice_width, slice_height))
+    stride = get_stride(image.shape, (patch_width, patch_height))
     logging.debug('stride: {}'.format(stride))
     # loop over the sliding window for each layer of the pyramid
-    for (y, x, window) in sliding_window(image, stepSize=stride, windowSize=(slice_width, slice_height)):
+    for (y, x, window) in sliding_window(image, stepSize=stride, windowSize=(patch_width, patch_height)):
         # if the window does not meet our desired window size, ignore it
         logging.debug('x: {}, y: {}, window: {}'.format(x, y, window.shape))
-        if window.shape[1] != slice_height or window.shape[0] != slice_width:
+        if window.shape[1] != patch_height or window.shape[0] != patch_width:
             continue
 
-        result.append(executor.submit(threaded_resize, image, y, x, slice_width, slice_height, resize).result())
+        result.append(executor.submit(threaded_resize, image, y, x, patch_width, patch_height, resize).result())
         # clone = image.copy()
         #
-        # crop_img = clone[y:y + slice_width, x:x + slice_height]
+        # crop_img = clone[y:y + patch_width, x:x + patch_height]
         # if resize:
         #     result.append(cv2.resize(crop_img, (224, 224)))
         # else:
@@ -232,10 +232,10 @@ def create_patches(image, slice_width, slice_height, resize=False):
     return result
 
 
-def threaded_resize(image, y, x, slice_width, slice_height, resize=False):
+def threaded_resize(image, y, x, patch_width, patch_height, resize=False):
     clone = image.copy()
 
-    crop_img = clone[y:y + slice_width, x:x + slice_height]
+    crop_img = clone[y:y + patch_width, x:x + patch_height]
     if resize:
         return cv2.resize(crop_img, (224, 224))
     else:

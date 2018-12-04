@@ -145,9 +145,46 @@ Python src\models\train_model.py
 ____________
 #Experiments and customisation:
 
+Dataset
+------------
+	# Images:
+	ETechnik: 3303
+	Tabellen: 2574
+	Fliesbilder: 208
+	Stahlbau: 300
+	Lagepläne: 121
+	--------------
+	Sum = 6506
+	
+	# Patches, filtered, percentage
+	ETechnik: 25917, 2096, 8%
+	Tabellen: 21536, 30, 0.1%
+	Fliesbilder: 10437, 2660, 25%
+	Stahlbau: 9159, 1458, 16%
+	Lagepläne: 5358, 1320, 24%
+	---------------
+	Sum = 72407, 7564, 10%
+
+	Average # patches per class
+	ETechnik: 8.5
+	Tabellen: 8.4
+	Fliesbilder: 63
+	Stahlbau: 35.4
+	Lagepläne: 55.2
+	--------------
+	Sum = 12.3
+
+
+
 Included experiments
 ------------
 ###Baseline
+
+##Graph:
+
+![alt text](https://github.com/minority4u/multiclass_keras/blob/master/reports/conclusion/Logs_baseline/Graph_inception_v3.png "Baseline-Model")
+
+
 
 ###Bigger Model
 
