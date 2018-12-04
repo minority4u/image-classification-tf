@@ -68,6 +68,56 @@ def get_inception_v3_model(input_shape=(224, 224, 3)):
     for l in model.layers:
         logging.debug('Layer Shape: {} {}'.format(l.name, l.output_shape))
 
+    logging.info(model.summary())
+    return aliases, model
+
+
+
+def get_inception_v3_model_small(input_shape=(224, 224, 3)):
+    """
+    Create a keras model
+    :return: aliases, model
+    """
+    aliases = {}
+    Input_1 = Input(shape=input_shape, name='Input_1')
+
+    Convolution2D_236 = Conv2D(name="Convolution2D_236", activation="relu",   kernel_size=(3, 3), filters=32, strides=(2, 2), padding="same")(Input_1)
+    Convolution2D_235 = Conv2D(name="Convolution2D_235", activation="relu",   kernel_size=(3, 3), filters=32, padding="same")(Convolution2D_236)
+    Convolution2D_237 = Conv2D(name="Convolution2D_237", activation="relu",   kernel_size=(3, 3), filters=64)(Convolution2D_235)
+
+    MaxPooling2D_69 = MaxPooling2D(name="MaxPooling2D_69", strides=(2, 2), pool_size=(3, 3),   padding="same")(Convolution2D_237)
+
+    Convolution2D_238 = Conv2D(name="Convolution2D_238", activation="relu", kernel_size=(3, 3),   filters=80)(MaxPooling2D_69)
+    Convolution2D_239 = Conv2D(name="Convolution2D_239", activation="relu", kernel_size=(3, 3),   filters=192, strides=(2, 2))(Convolution2D_238)
+
+    MaxPooling2D_7 = MaxPooling2D(name="MaxPooling2D_7", strides=(2, 2), pool_size=(3, 3),   padding="same")(Convolution2D_239)
+
+    Convolution2D_10 = Conv2D(name="Convolution2D_10", activation="relu", kernel_size=(1, 1), filters=64,   padding="same")(MaxPooling2D_7)
+    Convolution2D_3 = Conv2D(name="Convolution2D_3", activation="relu", kernel_size=(1, 1), filters=32,   strides=(2, 2))(Convolution2D_239)
+    Convolution2D_1 = Conv2D(name="Convolution2D_1", activation="relu", kernel_size=(1, 1), filters=32,   padding="same")(Convolution2D_239)
+    Convolution2D_4 = Conv2D(name="Convolution2D_4", activation="relu", kernel_size=(3, 1), filters=64,   padding="same")(Convolution2D_1)
+    Convolution2D_6 = Conv2D(name="Convolution2D_6", activation="relu", kernel_size=(1, 3), filters=64,   padding="same")(Convolution2D_4)
+    Convolution2D_2 = Conv2D(name="Convolution2D_2", activation="relu", kernel_size=(1, 1),  filters=32)(Convolution2D_239)
+    Convolution2D_8 = Conv2D(name="Convolution2D_8", activation="relu", kernel_size=(3, 1), filters=64, strides=(2, 1),   padding="same")(Convolution2D_2)
+    Convolution2D_9 = Conv2D(name="Convolution2D_9", activation="relu", kernel_size=(1, 3), filters=64, strides=(1, 2),   padding="same")(Convolution2D_8)
+    Convolution2D_5 = Conv2D(name="Convolution2D_5", activation="relu", kernel_size=(3, 1), filters=64, strides=(2, 1),   padding="same")(Convolution2D_6)
+    Convolution2D_7 = Conv2D(name="Convolution2D_7", activation="relu", kernel_size=(1, 3), filters=64, strides=(1, 2),   padding="same")(Convolution2D_5)
+
+    merge_1 = concatenate(inputs=[Convolution2D_10, Convolution2D_9, Convolution2D_7, Convolution2D_3], name='merge_1',axis=-1)
+
+    MaxPooling2D_70 = MaxPooling2D(name='MaxPooling2D_70',   pool_size=(7, 7))(merge_1)
+
+    Flatten_5 = Flatten(name='Flatten_5')(MaxPooling2D_70)
+    Dense_14 = Dense(name="Dense_14", activation="linear", units=5)(Flatten_5)
+    Dense_2 = Dense(name="Dense_2", activation="softmax", units=5)(Dense_14)
+
+    model = Model([Input_1], [Dense_2])
+    model._make_predict_function()
+
+    for l in model.layers:
+        logging.debug('Layer Shape: {} {}'.format(l.name, l.output_shape))
+
+    logging.info(model.summary())
     return aliases, model
 
 

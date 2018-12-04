@@ -22,6 +22,7 @@ steps_per_epoch : 75
 validation_split : 0.2
 input_image_width : 224
 input_image_height : 224
+input_image_depth : 3
 test_split : 1
 save_after_epochs: 1
 class_mode : 'categorical'
