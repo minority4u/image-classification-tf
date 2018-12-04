@@ -5,61 +5,74 @@ Test project for different multiclass experiments.
 
 Project Organization
 ------------
-
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
+	├── config
+	│   └── experiments
+	|
+	├── data
     │   ├── external       <- Data from third party sources.
     │   ├── interim        <- Intermediate data that has been transformed.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
+	|
+	├── docs               <- A default Sphinx project; see sphinx-doc.org for details	
+	│
+	├── models             <- Trained and serialized models, model predictions, or model summaries
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+	├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+	├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+	|    
+	├── reports			   <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   ├── figures        <- Generated graphics and figures to be used in reporting
+	│   ├── logs
+	│   └── tensorboard_logs
+	|
+	├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
+	├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+	|
+	├── src
+	│   ├── app
+	│   │   ├── app.py
+	│   │   ├── static
+	│   │   └── templates
+	|   |
+	│   ├── data
+	│   │   ├── data_utils.py
+	│   │   ├── reports
+	│   │   ├── patch_all_images.py
+	│   │   └── split_dataset.py
+	│   |
+	|   ├── features
+	│   │   └── build_features.py
+	│   |
+	│   ├── models
+	│   │   ├── evaluate_model.py
+	│   │   ├── model_manager.py
+	│   │   ├── model_utils.py
+	│   │   ├── predict_model.py
+	│   │   ├── reports
+	│   │   ├── Result.py
+	│   │   └── train_model.py
+	│   |
+	│   ├── utils_io.py
+	│   └── visualization
+	│       ├── utils.py
+	│       └── visualize.py
+	|
+	└── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
 Contributions:
 --------
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
 
-
-Example:
---------
-<p><small>Example project <a target="_blank" href="https://github.com/minority4u/keras_flask_deployment">Example datascience project build on tensorflow and flask</a>. #tensorflow # flask</small></p>
-
+#Basic Setup: 
 
 Setup native with OSX and Ubuntu
 ------------
@@ -70,8 +83,8 @@ Setup native with OSX and Ubuntu
 
 - clone repository
 ```
-git clone https://github.com/minority4u/keras_flask_deployment
-cd keras_flask_deployment
+git clone https://github.com/minority4u/multiclass_keras
+cd multiclass_keras
 ```
 
 - Install all Dependencies, and start the app (all in one), works with OSX and Linux
@@ -129,3 +142,37 @@ make train
 ```
 Python src\models\train_model.py
 ```
+____________
+#Experiments and customisation:
+
+Included experiments
+------------
+###Baseline
+
+###Bigger Model
+
+###Smaller Model
+
+###L2 regularisation
+
+###Dropout
+
+###Data augmentation
+
+###Batch normalisation
+
+###Bigger patchsize
+
+###Smaller patchsize
+
+
+Setup custom config file
+------------
+
+
+
+Setup custom model
+------------
+
+
+
