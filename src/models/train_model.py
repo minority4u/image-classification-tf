@@ -7,7 +7,7 @@ print(sys.path)
 
 # import own lobs
 from src.models.model_manager import *
-from src.models.evaluate_model import evaluate_on_patch_level
+from src.models.evaluate_model import evaluate
 from src.data.data_utils import get_train_and_validation_generator
 from src.models.model_utils import get_callbacks
 from src.utils_io import Console_and_file_logger, ensure_dir
@@ -75,7 +75,7 @@ def train():
 
 
 
-    evaluate_on_patch_level(config['test_dir'])
+    evaluate(config['test_dir'])
 
 
 
