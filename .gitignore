@@ -67,8 +67,8 @@ data/**/*.jpg
 *.zip
 *.h5
 *.hdf5
-*.png
 logs/*
+*output.png
 
 # Pycharm
 .idea
@@ -91,14 +91,10 @@ venv/
 venv\
 venv
 *.env
-output.png
 
 *.h
 *.c
 *.h
-output.png
-*.png
-*.png
 *.json
 *.h5 Kopie
 *.json
