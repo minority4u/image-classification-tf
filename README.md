@@ -176,6 +176,8 @@ Dataset
 
 
 
+--> Results in 387 Steps x Batchsize 128 = 49.536 Patche
+
 Included experiments
 ------------
 ###Baseline
