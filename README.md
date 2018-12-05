@@ -180,6 +180,38 @@ Included experiments
 ------------
 ###Baseline
 
+
+Patch-level
+precision    recall  f1-score   support
+
+    Etechnik       0.75      0.87      0.81 2390.8000000000206
+ Fliesbilder       0.66      0.76      0.71 2390.800000000019
+    Lageplan       0.81      0.52      0.63 2390.7999999999056
+    Stahlbau       0.92      0.69      0.79 2390.7999999999406
+    Tabellen       0.75      0.98      0.85 2390.7999999998724
+
+   micro avg       0.77      0.77      0.77 11953.999999999758
+   macro avg       0.78      0.77      0.76 11953.999999999758
+weighted avg       0.78      0.77      0.76 11953.999999999758
+
+Accuracy: 0.7652364075738796
+
+
+Image-level
+              precision    recall  f1-score   support
+
+    Etechnik       1.00      0.99      1.00 195.20000000000107
+ Fliesbilder       0.90      1.00      0.95 195.20000000000002
+    Lageplan       1.00      0.86      0.93 195.19999999999993
+    Stahlbau       1.00      1.00      1.00 195.19999999999996
+    Tabellen       0.96      1.00      0.98 195.1999999999998
+
+   micro avg       0.97      0.97      0.97 976.0000000000008
+   macro avg       0.97      0.97      0.97 976.0000000000008
+weighted avg       0.97      0.97      0.97 976.0000000000008
+
+Accuracy: 0.9706977406466091
+
 Description
 TODO:
 Description from Raw Data to prediction
