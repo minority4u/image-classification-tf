@@ -117,11 +117,12 @@ if __name__ == '__main__':
     params = yaml.load(open(args.config, "r"))
 
     # Make sure that source and destination are set
-    assert {"batch_size_train", "epochs", "data_dir", "experiment_name"} <= set(
-        params.keys()), "Configuration is incomplete! Please define dir_to_src and dir_to_dest in config.yml"
+    assert {"batch_size_train", "epochs", "data_dir", "test_dir_image", "experiment_name"} <= set(
+        params.keys()), "Configuration is incomplete! Please define data_dir and test_dir_image in config.yml"
 
     # Make sure source folder exists
-    assert os.path.exists(params["data_dir"]), "Path to src {} does not exist!".format(params["data_dir"])
+    assert os.path.exists(params["data_dir"]), "Path to train src {} does not exist!".format(params["data_dir"])
+    assert os.path.exists(params["test_dir_image"]), "Path to test src {} does not exist!".format(params["test_dir_image"])
 
     # Define central logger, set name and logging level
     Console_and_file_logger(logfile_name=params["experiment_name"], log_lvl="INFO")
