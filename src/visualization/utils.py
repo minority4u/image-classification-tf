@@ -148,3 +148,30 @@ def create_reports(ground_truth, predicted_classes, class_names, config, report_
     plt.figure()
     plot_confusion_matrix(cm, classes=target_names, normalize=True,
                           title='Normalized confusion matrix', path_to_save=path_to_save,filename = f_name_suffix + '_confusion_matrix_normalized.png')
+
+
+def plot_history(history, config):
+
+    path_to_save = './data/reports/'
+    path_to_save = os.path.join(path_to_save, config.get('experiment_name', 'unnamed'))
+    filename = 'history_plot.png'
+
+    # Plot training & validation accuracy values
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    save_plot(plt.gcf(), path_to_save, filename)
+    #plt.show()
+
+    # Plot training & validation loss values
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    save_plot(plt.gcf(), path_to_save, filename)
+    #plt.show()

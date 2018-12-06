@@ -10,6 +10,7 @@ from src.models.model_manager import *
 from src.models.evaluate_model import evaluate
 from src.data.data_utils import get_train_and_validation_generator
 from src.models.model_utils import get_callbacks
+from src.visualization.utils import plot_history
 from src.utils_io import Console_and_file_logger, ensure_dir
 from src.visualization.utils import create_reports
 from keras.backend.tensorflow_backend import set_session
@@ -74,6 +75,8 @@ def train():
                                   shuffle=True, initial_epoch=0)
 
 
+
+    plot_history(history=history, config=config)
 
     evaluate(config['test_dir'])
 
