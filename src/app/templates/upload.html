@@ -4,48 +4,129 @@
     <meta charset="utf-8">
     <title>Classify your technical blueprint</title>
     <link rel="stylesheet" href="../static/upload_style.css" type="text/css"/>
-    <script type="text/javascript" src="js/jquery-1.11.3-jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="  crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/script.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style type="text/css">
+		.header{
+			width: 300px;
+			margin-top: 50px;
+			margin-left: 50px;
+		}
+		
+		.header img{
+			max-width:200px;
+		}
+		
+		body{
+			background:url("../static/img/background.jpg");
+		}
+		
+		.container{
+			padding-top:100px;
+		}
+		
+		.center {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			width: 50%;
+		}
+	</style>
 </head>
 <body>
-<div class="container">
-    <div class="row">
-
-        <div class="col-md-8">
-
-            <h1>Classify your technical blueprint</h1>
-            <hr>
-
-            <form id="form" action="/predict/" method="post" enctype="multipart/form-data" target="#">
+	<div class="header col-md-8 col-sm-8 col-lg-8" >
+		<a href="#" class="navbar-left"><img src="../static/img/cairo.png"></a>
+	</div>
 
 
-                <input id="uploadImage" type="file" accept="image/*" name="image"/>
 
-                <br>
-                <input class="btn btn-success" type="submit" value="Predict">
-            </form>
+	<div class="container">
+		<div class="row">
 
-            <script type="text/javascript">
-                    document.getElementById("uploadImage").onchange = function () {
-                        var reader = new FileReader();
+			<div class="col-md-8 col-sm-8 col-lg-8">
 
-                        reader.onload = function (e) {
-                            // get loaded data and render thumbnail.
-                            document.getElementById("image").src = e.target.result;
-                        };
+				<h1>Classify your technical blueprint</h1>
+				<hr style="border-color:black">
 
-                        // read the image file as a data URL.
-                        reader.readAsDataURL(this.files[0]);
-                    };
-            </script>
-            <hr>
-            <img id="image"/>
+				<form id="form" action="http://cairoinferencing.westeurope.cloudapp.azure.com:5000/predict/" method="post" enctype="multipart/form-data" target="#">
+
+				<div>
+					<label class="btn btn-default btn-file">
+						Browse <input  style="display:none" id="uploadImage" class="form-control"  type="file" accept="image/*" name="image">
+					</label>
+					<span class="label label-info" id="upload-file-info"></span>
+				</div>
+					
+
+					<br>
+					<input class="btn btn-success" style="display:none" type="submit"  value="Predict" id="predict">
+				</form>
+				<div class="lead" id="resultDiv" style="padding-top:25px">
+					
+				</div>
+				<script type="text/javascript">
+						document.getElementById("uploadImage").onchange = function () {
+							
+							//new  for customized input
+							
+							$('#upload-file-info').html(this.files[0].name)
+						
+							var reader = new FileReader();
+
+							reader.onload = function (e) {
+								// get loaded data and render thumbnail.
+								document.getElementById("image").src = e.target.result;
+							};
+
+							// read the image file as a data URL.
+							reader.readAsDataURL(this.files[0]);
+							
+							$("#predict").show();
+						};
+						
+						$('#form').ajaxForm( 
+							{ success:	showResponse,
+							error: showError}
+						); 
+						
+						// post-submit callback 
+						function showResponse(responseText, statusText, xhr, $form)  { 
+							//alert('status: ' + statusText + '\n\nresponseText: \n' + responseText ); 
+							
+							var mydata = eval(responseText);
+							var table = $.makeTable(mydata);
+							$(table).appendTo("#resultDiv");
+						} 
+						
+						function showError(jqXHR, textStatus, errorThrown,d,e,f,g )
+						{
+							alert('status: ' + textStatus + '\n\nresponseText: \n' + errorThrown ); 
+						}
+					
+						$.makeTable = function (mydata) {
+							var table = $('<table  class="table">');
+							
+							$.each(mydata, function (key, value) {
+								var TableRow = "<tr>";
+								
+								TableRow += "<th scope='row'>" + key + "</th>";
+								TableRow += "<td>" + value + "</td>";
+								
+								TableRow += "</tr>";
+								$(table).append(TableRow);
+							});
+							return ($(table));
+						};
+				</script>
+				<hr style="border-color:black">
+				<img id="image" class="center" />
 
 
-        </div>
-    </div>
-</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
