@@ -8,6 +8,37 @@ from keras.layers.merge import concatenate
 import logging
 
 
+def get_model(config):
+    """
+    Entry point for model creation
+    Returns different models depending on the config
+    :param config:
+    :return:
+    """
+    architecture = config['model_architecture']
+
+    if architecture == 'inception_v3':
+        return get_inception_v3_model((config['input_image_height'],config['input_image_width'], config['input_image_depth']))
+
+    if architecture == 'inception_v3_small':
+        return get_inception_v3_model_small((config['input_image_height'],config['input_image_width'], config['input_image_depth']))
+
+    if architecture == 'inception_v3_big':
+        return get_inception_v3_model_big((config['input_image_height'],config['input_image_width'], config['input_image_depth']))
+
+    if architecture == 'inception_v3_reg':
+        return get_inception_v3_model_l2((config['input_image_height'],config['input_image_width'], config['input_image_depth']),
+                                         regularization_factor=config['regularization_factor'])
+    if architecture == 'inception_v3_drop':
+        return get_inception_v3_model_dropout((config['input_image_height'],config['input_image_width'], config['input_image_depth']),
+                                              dropout_rate=config['dropout_rate'])
+    if architecture == 'vgg16':
+        return get_VGG_model()
+
+
+    return get_inception_v3_model()
+
+
 def get_inception_v3_model(input_shape=(224, 224, 3)):
     """
     Create a keras model
@@ -99,7 +130,7 @@ def get_inception_v3_model(input_shape=(224, 224, 3)):
     return aliases, model
 
 
-def get_inception_v3_model_large(input_shape=(224, 224, 3)):
+def get_inception_v3_model_big(input_shape=(224, 224, 3)):
     """
     Create a keras model
     :return: aliases, model
@@ -172,20 +203,19 @@ def get_inception_v3_model_large(input_shape=(224, 224, 3)):
 
     merge_10 = concatenate(inputs=[Convolution2D_128, Convolution2D_129, Convolution2D_125, Convolution2D_130],
                            name='merge_10', axis=-1)
-    
-    
+
     Convolution2D_230 = Conv2D(name="Convolution2D_230", activation="relu", kernel_size=(1, 1), filters=128,
                                strides=(2, 2))(merge_10)
-    MaxPooling2D_25 = MaxPooling2D(name="MaxPooling2D_25", strides=(2, 2), pool_size=(3, 3), padding="same")(merge_1)
+    MaxPooling2D_25 = MaxPooling2D(name="MaxPooling2D_25", strides=(2, 2), pool_size=(3, 3), padding="same")(merge_10)
     Convolution2D_229 = Conv2D(name="Convolution2D_229", activation="relu", kernel_size=(1, 1), filters=128,
                                padding="same")(MaxPooling2D_25)
-    Convolution2D_226 = Conv2D(name="Convolution2D_226", activation="relu", kernel_size=(1, 1), filters=128)(merge_1)
+    Convolution2D_226 = Conv2D(name="Convolution2D_226", activation="relu", kernel_size=(1, 1), filters=128)(merge_10)
     Convolution2D_227 = Conv2D(name="Convolution2D_227", activation="relu", kernel_size=(3, 1), filters=128,
                                strides=(2, 1), padding="same")(Convolution2D_226)
     Convolution2D_228 = Conv2D(name="Convolution2D_228", activation="relu", kernel_size=(1, 3), filters=128,
                                strides=(1, 2), padding="same")(Convolution2D_227)
     Convolution2D_221 = Conv2D(name="Convolution2D_221", activation="relu", kernel_size=(1, 1), filters=128,
-                               padding="same")(merge_1)
+                               padding="same")(merge_10)
     Convolution2D_222 = Conv2D(name="Convolution2D_222", activation="relu", kernel_size=(3, 1), filters=128,
                                padding="same")(Convolution2D_221)
     Convolution2D_223 = Conv2D(name="Convolution2D_223", activation="relu", kernel_size=(1, 3), filters=128,
@@ -197,13 +227,8 @@ def get_inception_v3_model_large(input_shape=(224, 224, 3)):
 
     merge_20 = concatenate(inputs=[Convolution2D_228, Convolution2D_229, Convolution2D_225, Convolution2D_230],
                            name='merge_20', axis=-1)
-    
-    
-    
-    
-    
 
-    MaxPooling2D_70 = MaxPooling2D(name='MaxPooling2D_70', pool_size=(7, 7))(merge_20)
+    MaxPooling2D_70 = MaxPooling2D(name='MaxPooling2D_70', pool_size=(4, 4))(merge_20)
 
     Flatten_5 = Flatten(name='Flatten_5')(MaxPooling2D_70)
     Dense_14 = Dense(name="Dense_14", activation="linear", units=5)(Flatten_5)
@@ -218,7 +243,6 @@ def get_inception_v3_model_large(input_shape=(224, 224, 3)):
 
     logging.info(model.summary())
     return aliases, model
-
 
 def get_inception_v3_model_small(input_shape=(224, 224, 3)):
     """

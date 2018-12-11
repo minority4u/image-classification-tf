@@ -1,14 +1,14 @@
 # general config
-experiment_name : 'train_inception_v3'
+experiment_name : 'vgg16'
 
 # paths
 data_dir : 'data/processed/filtered_patches_v2/train_patches'
 test_dir_image : 'data/processed/filtered_patches_v2/test_images/'
-model_architecture : 'inception_v3'
+model_architecture : 'vgg16'
 model_path : 'models/'
-model_json : 'models/Train_inception_v3/model.json'
-model_h5 : 'models/Train_inception_v3/weights_e-75_t-0.98-0.16_v-0.97-0.09.h5'
-tensorboard_logs : 'reports/tensorboard_logs/inception_v3_base'
+model_json : 'models/vgg16/model.json'
+model_h5 : 'models/vgg16/weights_e-10_t-0.06-22.9_v-0.0-16.1.h5'
+tensorboard_logs : 'reports/tensorboard_logs/vgg16'
 report_path: 'reports/figures/'
 
 # input parameter
@@ -17,7 +17,7 @@ color_mode : 'rgb'
 
 # training
 epochs : 500
-batch_size_train : 128
+batch_size_train : 16
 batch_size_val : 128
 batch_size_test : 30
 steps_per_epoch : 75

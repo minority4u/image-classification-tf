@@ -53,7 +53,7 @@ def train():
     logging.info('Class weights: {0}'.format(class_weights))
     # get model
     logging.info('input shape: {}'.format(config['input_shape']))
-    aliases, model = get_inception_v3_model((config['input_image_height'],config['input_image_width'], config['input_image_depth']))
+    aliases, model = get_model(config)
 
     # compile model
     model.compile(loss=config['loss_function'],

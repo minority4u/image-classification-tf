@@ -1,15 +1,16 @@
 # general config
-experiment_name : 'train_inception_v3'
+experiment_name : 'Train_inception_v3_small'
 
 # paths
 data_dir : 'data/processed/filtered_patches_v2/train_patches'
 test_dir_image : 'data/processed/filtered_patches_v2/test_images/'
-model_architecture : 'inception_v3'
+model_architecture : 'inception_v3_small'
 model_path : 'models/'
-model_json : 'models/Train_inception_v3/model.json'
-model_h5 : 'models/Train_inception_v3/weights_e-75_t-0.98-0.16_v-0.97-0.09.h5'
-tensorboard_logs : 'reports/tensorboard_logs/inception_v3_base'
+model_json : 'models/Train_inception_v3_small/model.json'
+model_h5 : 'models/Train_inception_v3_small/weights_e-33_t-0.94-0.33_v-0.93-0.20.h5'
+tensorboard_logs : 'reports/tensorboard_logs/Inception_v3_small'
 report_path: 'reports/figures/'
+
 
 # input parameter
 input_shape : (224, 224, 3)

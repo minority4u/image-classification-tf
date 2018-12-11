@@ -8,15 +8,17 @@ import tensorflow as tf
 
 
 def init(config):
-	# load the json file
-	json_file = open('models/model.json','r')
+	json_file = open(config['model_json'],'r')
 	loaded_model_json = json_file.read()
 	json_file.close()
+	# load the json file
+    #json_file = open('models/model.json','r')
+
 
 	# convert json to keras model file
 	loaded_model = model_from_json(loaded_model_json)
 	#load woeights into new model
-	loaded_model.load_weights("models/model.h5")
+	loaded_model.load_weights(config['model_h5'])
 	logging.info("Loaded Model from disk")
 
 	#compile and evaluate loaded model
