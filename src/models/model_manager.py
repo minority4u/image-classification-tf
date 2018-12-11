@@ -453,7 +453,7 @@ def get_inception_v3_model_l2(input_shape=(224, 224, 3), regularization_factor=0
 
     Convolution2D_130 = Conv2D(name="Convolution2D_130", activation="relu", kernel_size=(1, 1), filters=128,
                                strides=(2, 2),kernel_regularizer=regularizers.l2(regularization_factor))(merge_1)
-    MaxPooling2D_15 = MaxPooling2D(name="MaxPooling2D_15", strides=(2, 2), pool_size=(3, 3), padding="same",kernel_regularizer=regularizers.l2(regularization_factor))(
+    MaxPooling2D_15 = MaxPooling2D(name="MaxPooling2D_15", strides=(2, 2), pool_size=(3, 3), padding="same")(
         merge_1)
     Convolution2D_129 = Conv2D(name="Convolution2D_129", activation="relu", kernel_size=(1, 1), filters=128,
                                padding="same",kernel_regularizer=regularizers.l2(regularization_factor))(MaxPooling2D_15)
