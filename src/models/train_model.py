@@ -54,6 +54,7 @@ def train():
     # get model
     logging.info('input shape: {}'.format(config['input_shape']))
     aliases, model = get_model(config)
+    logging.info(model.summary())
 
     # compile model
     model.compile(loss=config['loss_function'],
