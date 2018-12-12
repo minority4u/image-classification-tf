@@ -17,6 +17,7 @@ sys.path.append(os.path.abspath("."))
 from flask import Flask, render_template, request
 from flask import jsonify
 import yaml
+import json
 from imageio import imread
 from argparse import ArgumentParser
 from src.utils_io import parameter_logger, Console_and_file_logger
@@ -114,11 +115,17 @@ def predict():
     logging.debug(x)
 
     t1 = time()
-    result = Result(external_predict_images([x], '', model, graph, config, resize=True))
+    result = external_predict_images([x], '', model, graph, config, resize=True)
     logging.debug(result)
     prediction = result.get_image_results_as_class_name()
 
-    response = jsonify({'result': str(prediction), 'time': str(time()-t1)})
+    resp = {}
+    resp['result'] = str(prediction)
+    resp['time'] = str((time()-t1))
+    resp['probability'] = json.dumps(result.get_probabillities())
+    resp['patches'] = result.get_number_of_patches()
+
+    response = jsonify(resp)
     logging.debug(response)
     return response
 
@@ -128,6 +135,6 @@ if __name__ == "__main__":
     # decide what port to run the app in
     port = int(os.environ.get('PORT', 5000))
     # run the app locally on the givn port
-    app.run(debug=True, host='0.0.0.0', port=port)
+    #app.run(debug=True, host='0.0.0.0', port=port)
 # optional if we want to run in debugging mode
-# app.run(debug=True)
+    app.run(debug=True)

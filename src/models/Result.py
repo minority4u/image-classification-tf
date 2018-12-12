@@ -2,6 +2,7 @@ import numpy as np
 from collections import Counter
 import operator
 from src.data.data_utils import get_class_names
+import logging
 
 
 class Result():
@@ -38,9 +39,27 @@ class Result():
     def get_class_names(self):
         return self.class_names
 
+    def get_number_of_patches(self):
+        return [('image_' + str(idx) + " = " + str(len(image.patch_results))) for idx, image in enumerate(self.image_results)]
+
+    def get_probabillities(self):
+        result_probs = []
+        cls = self.get_class_names()
+        probs = [image.get_image_prob() for idx, image in enumerate(self.image_results)]
+        for idx, img in enumerate(self.image_results):
+            p = {}
+            for i, c in enumerate(cls):
+                p[c] = str(probs[idx][i])
+            result_probs.append(p)
+            logging.debug(result_probs)
+
+        return result_probs
+
+
 
 class ImageResult():
     patch_results = []
+    image_prob = {}
 
     def __init__(self, patch_results):
         self.patch_results = patch_results
@@ -59,6 +78,17 @@ class ImageResult():
     def get_patch_truth(self):
         return [patch.get_truth() for patch in self.patch_results]
 
+    def get_image_prob(self):
+
+        probs = [patch.get_prediction_probability()[0] for patch in self.patch_results]
+        #print(probs)
+        np_probs = np.array(probs)
+        #print(np_probs)
+        avg_probs = np.mean(np_probs, axis=0)
+        #print(avg_probs)
+
+        return avg_probs
+
 
 class PatchResult():
     prob = {}
@@ -66,6 +96,7 @@ class PatchResult():
 
     def __init__(self, class_prob, ground_truth):
         self.prob = class_prob
+
         self.ground_truth = ground_truth
 
     def get_prediction_probability(self):

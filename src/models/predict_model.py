@@ -87,7 +87,7 @@ def external_predict_images(images, label, mod, gra, conf, resize=False):
     config = conf
     model = mod
     graph = gra
-    return predict_imges(images=images, label=label, resize=resize)
+    return Result(predict_imges(images=images, label=label, resize=resize))
 
 
 
