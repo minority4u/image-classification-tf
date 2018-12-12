@@ -1,22 +1,24 @@
 # general config
-experiment_name : 'Train_inception_v3'
+experiment_name : 'train_inception_v3'
 
 # paths
-data_dir : 'data/processed/Train_Patches/'
-test_dir_image : 'data/raw/test_images/'
+data_dir : 'data/processed/filtered_patches_v2/train_patches'
+test_dir_image : 'data/processed/filtered_patches_v2/test_images/'
+model_architecture : 'inception_v3'
 model_path : 'models/'
-tensorboard_logs : 'reports/tensorboard_logs'
+model_json : 'models/Train_inception_v3/model.json'
+model_h5 : 'models/Train_inception_v3/weights_e-75_t-0.98-0.16_v-0.97-0.09.h5'
+tensorboard_logs : 'reports/tensorboard_logs/inception_v3_base'
 report_path: 'reports/figures/'
-
 
 # input parameter
 input_shape : (224, 224, 3)
 color_mode : 'rgb'
 
 # training
-epochs : 100
+epochs : 500
 batch_size_train : 128
-batch_size_val : 30
+batch_size_val : 128
 batch_size_test : 30
 steps_per_epoch : 75
 validation_split : 0.2

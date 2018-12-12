@@ -53,7 +53,8 @@ def train():
     logging.info('Class weights: {0}'.format(class_weights))
     # get model
     logging.info('input shape: {}'.format(config['input_shape']))
-    aliases, model = get_inception_v3_model((config['input_image_height'],config['input_image_width'], config['input_image_depth']))
+    aliases, model = get_model(config)
+    logging.info(model.summary())
 
     # compile model
     model.compile(loss=config['loss_function'],
@@ -97,7 +98,7 @@ if __name__ == '__main__':
     # define arguments and default values to parse
     # define tha path to your config file
     parser.add_argument("--config", "-c", help="Define the path to config.yml",
-                        default="config/experiments/inception_v3_base.yml", required=False)
+                        default="config/experiments/inception_v3_base.yml", required=True)
 
     parser.add_argument("--working_dir", help="Define the absolute path to the project root",
                         default="../../", required=False)

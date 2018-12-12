@@ -48,7 +48,7 @@ parser = ArgumentParser()
 # define arguments and default values to parse
 # define tha path to your config file
 parser.add_argument("--config", "-c", help="Define the path to config.yml",
-                    default="config/experiments/inception_v3_base.yml", required=False)
+                    default="config/app/inception_v3_base.yml", required=False)
 
 parser.add_argument("--working_dir", help="Define the absolute path to the project root",
                     default="../../", required=False)

@@ -30,11 +30,11 @@ class_names = get_class_names()
 
 
 def evaluate(evaluation_path):
-    logging.debug('Inference with: {}'.format(evaluation_path))
+    logging.info('Inference with: {}'.format(evaluation_path))
     set_config(config)
 
     inference_images = load_all_images(evaluation_path)
-    logging.debug('Classes found: {}'.format(len(inference_images)))
+    logging.info('Classes found: {}'.format(len(inference_images)))
 
     global model, graph, class_names
 
@@ -70,7 +70,7 @@ def evaluate(evaluation_path):
 if __name__ == '__main__':
     # Define argument parser
     parser = ArgumentParser()
-    Console_and_file_logger('Predict_model', log_lvl=logging.INFO)
+
 
     # define arguments and default values to parse
     # define tha path to your config file
@@ -90,7 +90,9 @@ if __name__ == '__main__':
 
     # Load config and other global objects
     config = yaml.load(open(args.config, "r"))
+    Console_and_file_logger('predict_' + config['experiment_name'], log_lvl=logging.INFO)
     logging.debug(json.dumps(config, indent=2))
     model, graph = init(config)
+    logging.info(model.summary())
 
     evaluate(config['test_dir_image'])
