@@ -1,0 +1,34 @@
+# general config
+experiment_name : 'inception_v3_reg'
+
+# paths
+data_dir : 'data/processed/filtered_patches_v2/train_patches'
+test_dir_image : 'data/processed/filtered_patches_v2/test_images/'
+model_architecture : 'inception_v3_reg'
+model_path : 'models/'
+model_json : 'models/inception_v3_reg/model.json'
+model_h5 : 'models/inception_v3_reg/weights_e-81_t-0.98-0.10_v-0.92-0.28.h5'
+tensorboard_logs : 'reports/tensorboard_logs/inception_v3_reg'
+report_path: 'reports/figures/'
+regularization_factor : 0.01
+
+# input parameter
+input_shape : (224, 224, 3)
+color_mode : 'rgb'
+
+# training
+epochs : 500
+batch_size_train : 128
+batch_size_val : 128
+batch_size_test : 30
+steps_per_epoch : 75
+validation_split : 0.2
+input_image_width : 224
+input_image_height : 224
+input_image_depth : 3
+test_split : 1
+save_after_epochs: 1
+class_mode : 'categorical'
+metrics : ['accuracy']
+loss_function : 'categorical_crossentropy'
+all_target_names : ['Etechnik', 'Fliesbilder', 'Lageplan', 'Stahlbau', 'Tabellen']
