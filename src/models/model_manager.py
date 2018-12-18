@@ -525,12 +525,13 @@ def get_InceptionResNetV2_model(input_shape=(299,299,3)):
     input_1 = Input(shape=input_shape, name='input_1')
 
     inception_model = InceptionResNetV2(include_top=True, weights='imagenet', input_tensor=input_1, pooling=None, classes=1000)
-    dense_layer = Dense(name="Dense_layer", activation="softmax", units=5)(inception_model)
+
+    out_layer = inception_model.output
+
+    dense_layer = Dense(name="Dense_layer", activation="softmax", units=5)(out_layer)
+    
     model = Model(input_1, dense_layer)
     model._make_predict_function()
-
-    for l in model.layers:
-        logging.debug('Layer Shape: {} {}'.format(l.name, l.output_shape))
 
     logging.info(model.summary())
 
