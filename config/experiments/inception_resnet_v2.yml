@@ -17,8 +17,8 @@ color_mode : 'rgb'
 
 # training
 epochs : 500
-batch_size_train : 128
-batch_size_val : 128
+batch_size_train : 16
+batch_size_val : 16
 batch_size_test : 30
 steps_per_epoch : 75
 validation_split : 0.2
