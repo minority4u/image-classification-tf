@@ -46,7 +46,7 @@
 	<div class="container">
 		<div class="row">
 
-			<div class="col-md-8 col-sm-8 col-lg-8">
+			<div class="col-md-10 col-sm-10 col-lg-10">
 
 				<h1>Classify your technical blueprint</h1>
 				<hr style="border-color:black">
@@ -95,8 +95,8 @@
 						
 						// post-submit callback 
 						function showResponse(responseText, statusText, xhr, $form)  { 
-							//alert('status: ' + statusText + '\n\nresponseText: \n' + responseText ); 
-							
+							//alert('status: ' + statusText + '\n\nresponseText: \n' + responseText );
+							$("#resultDiv").html();
 							var mydata = eval(responseText);
 							var table = $.makeTable(mydata);
 							$(table).appendTo("#resultDiv");
