@@ -51,7 +51,7 @@
 				<h1>Classify your technical blueprint</h1>
 				<hr style="border-color:black">
 
-				<form id="form" action="http://cairoinferencing.westeurope.cloudapp.azure.com:5000/predict/" method="post" enctype="multipart/form-data" target="#">
+				<form id="form" action="http://127.0.0.1:5000/predict/" method="post" enctype="multipart/form-data" target="#">
 
 				<div>
 					<label class="btn btn-default btn-file">
@@ -76,6 +76,7 @@
 						
 							var reader = new FileReader();
 
+
 							reader.onload = function (e) {
 								// get loaded data and render thumbnail.
 								document.getElementById("image").src = e.target.result;
@@ -88,7 +89,7 @@
 						};
 						
 						$('#form').ajaxForm( 
-							{ success:	showResponse,
+							{success:	showResponse,
 							error: showError}
 						); 
 						

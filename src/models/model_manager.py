@@ -3,6 +3,7 @@ from keras.layers.core import Flatten, Dropout, Dense
 from keras.layers import Input, MaxPooling2D
 from keras.models import Model
 from keras.applications.vgg16 import VGG16
+from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras import regularizers
 from keras.layers.merge import concatenate
 import logging
@@ -34,6 +35,9 @@ def get_model(config):
                                               dropout_rate=config['dropout_rate'])
     if architecture == 'vgg16':
         return get_VGG_model()
+
+    if architecture == 'inception_resnet_v2':
+        return get_InceptionResNetV2_model()
 
 
     return get_inception_v3_model()
@@ -513,6 +517,10 @@ def get_VGG_model():
     model.summary()
 
     return aliases, model
+
+
+def get_InceptionResNetV2_model(input_shape=(299,299,3)):
+    return InceptionResNetV2(include_top=True, weights='imagenet', input_tensor=None, input_shape=input_shape, pooling=None, classes=5)
 
 
 from keras.optimizers import *
