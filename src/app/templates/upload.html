@@ -96,7 +96,7 @@
 						// post-submit callback 
 						function showResponse(responseText, statusText, xhr, $form)  { 
 							//alert('status: ' + statusText + '\n\nresponseText: \n' + responseText );
-							$("#resultDiv").html();
+							$("#resultDiv").html("");
 							var mydata = eval(responseText);
 							var table = $.makeTable(mydata);
 							$(table).appendTo("#resultDiv");
