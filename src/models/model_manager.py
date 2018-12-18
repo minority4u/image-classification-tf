@@ -526,7 +526,7 @@ def get_InceptionResNetV2_model(input_shape=(299,299,3)):
 
     inception_model = InceptionResNetV2(include_top=True, weights='imagenet', input_tensor=input_1, pooling=None, classes=1000)
 
-    for l in inception_model.layers[:-6]:
+    for l in inception_model.layers[:-5]:
         l.trainable = False
 
     out_layer = inception_model.output
