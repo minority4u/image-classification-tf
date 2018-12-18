@@ -82,7 +82,7 @@ if __name__ == '__main__':
     # parser.add_argument("--modelskiptraining", help="Skip Training", default="None", required=False)
 
     args = parser.parse_args()
-    logging.debug(args.config)
+    #logging.debug(args.config)
     # Make sure the config exists
     assert os.path.exists(
         args.config), "Config does not exist {}!, Please create a config.yml in root or set the path with --config.".format(

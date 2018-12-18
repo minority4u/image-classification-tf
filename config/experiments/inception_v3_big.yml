@@ -7,7 +7,7 @@ test_dir_image : 'data/processed/filtered_patches_v2/test_images/'
 model_architecture : 'inception_v3_big'
 model_path : 'models/'
 model_json : 'models/Train_inception_v3_big/model.json'
-model_h5 : 'models/Train_inception_v3_big/weights_e-34_t-0.98-0.09_v-0.99-0.02.h5'
+model_h5 : 'models/Train_inception_v3_big/weights_e-38_t-0.98-0.08_v-0.97-0.11.h5'
 tensorboard_logs : 'reports/tensorboard_logs/Inception_v3_big'
 report_path: 'reports/figures/'
 
