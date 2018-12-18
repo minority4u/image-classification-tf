@@ -7,7 +7,7 @@ test_dir_image : 'data/processed/filtered_patches_v2/test_images/'
 model_architecture : 'inception_v3_reg'
 model_path : 'models/'
 model_json : 'models/inception_v3_reg/model.json'
-model_h5 : 'models/inception_v3_reg/weights_e-75_t-0.98-0.16_v-0.97-0.09.h5'
+model_h5 : 'models/inception_v3_reg/weights_e-81_t-0.98-0.10_v-0.92-0.28.h5'
 tensorboard_logs : 'reports/tensorboard_logs/inception_v3_reg'
 report_path: 'reports/figures/'
 regularization_factor : 0.01
