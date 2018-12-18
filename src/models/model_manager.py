@@ -529,7 +529,7 @@ def get_InceptionResNetV2_model(input_shape=(299,299,3)):
     out_layer = inception_model.output
 
     dense_layer = Dense(name="Dense_layer", activation="softmax", units=5)(out_layer)
-    
+
     model = Model(input_1, dense_layer)
     model._make_predict_function()
 
