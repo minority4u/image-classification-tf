@@ -38,6 +38,9 @@ def get_model(config):
     if architecture == 'vgg16_imagenet_include_top_false':
         return get_VGG_model_imagenet_custom_top()
 
+    if architecture == 'vgg16_imagenet_include_top_false_SGD':
+        return get_VGG_model_imagenet_custom_top_SGD()
+
     if architecture == 'inception_resnet_v2':
         return get_InceptionResNetV2_model()
 
@@ -548,6 +551,32 @@ def get_VGG_model_imagenet_custom_top():
 
     return aliases, model
 
+def get_VGG_model_imagenet_custom_top_SGD():
+    """
+    Create a keras model
+    :return: aliases, model
+    """
+    aliases = {}
+
+    # LOAD VGG16
+    # Generate a model with all layers (with top)
+    vgg16 = VGG16(weights='imagenet', include_top=False, input_shape=(224,224,3))
+    #for layer in vgg16.layers:
+    #    layer.trainable = False
+    x = vgg16.output
+    x = Flatten(name='flatten')(x)
+    x = Dense(2048, activation='relu', name='fc1')(x)
+    x = Dense(2048, activation='relu', name='fc2')(x)
+    x = Dense(5, activation='softmax', name='predictions')(x)
+
+    # Add a layer where input is the output of the  second last layer
+    #x = Dense(5, activation='softmax', name='predictions')(vgg16.layers[-2].output)
+
+    # Then create the corresponding model
+    model = Model(input=vgg16.input, output=x)
+    model.summary()
+
+    return aliases, model
 
 def get_InceptionResNetV2_model(input_shape=(299,299,3)):
 
