@@ -69,7 +69,8 @@ def train():
 
     # model fit with generator
     history = model.fit_generator(train_generator, steps_per_epoch=len(train_generator),
-                                  epochs=int(config['epochs']), verbose=2, callbacks=callbacks,
+                                  epochs=int(config['epochs']), verbose=1
+                                  , callbacks=callbacks,
                                   validation_data=validation_generator,
                                   validation_steps=20, class_weight=class_weights, max_queue_size=10, workers=1,
                                   use_multiprocessing=False,
