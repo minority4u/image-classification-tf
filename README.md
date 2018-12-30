@@ -9,54 +9,64 @@ Project Organization
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
 	├── config
-	│   ├── app
 	│   └── experiments
-	│
+	|
 	├── data
     │   ├── external       <- Data from third party sources.
     │   ├── interim        <- Intermediate data that has been transformed.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
+	|
+	├── docs               <- A default Sphinx project; see sphinx-doc.org for details	
 	│
-	├── models             <- Trained and serialized models, *.json and *.h5
+	├── models             <- Trained and serialized models, model predictions, or model summaries
     │
-	├── notebooks          <- Jupyter notebooks. Tests and explorations
+	├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
     │
 	├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-	│    
+	|    
 	├── reports			   <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   ├── figures        <- Generated graphics and figures to be used in reporting
 	│   ├── logs
 	│   └── tensorboard_logs
-	│
-	├── requirements.txt   <- The requirements file for reproducing the analysis environment
+	|
+	├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    │                         generated with `pip freeze > requirements.txt`
     │
 	├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-	│
-	└── src
-	    ├── app
-	    │   ├── app.py				<- Flask-App
-	    │   ├── static				<- javascript and css files
-	    │   └── templates			<- Html-testpage
-	    |
-	    ├── data
-	    │   ├── data_utils.py		<- Data helpers, patching etc.
-	    │   ├── patch_all_images.py <- Image preprocessing script
-	    │   └── split_dataset.py	<- Image splitting script
-	    |
-	    ├── models
-	    │   ├── evaluate_model.py	<- Evaluation model with test-dataset, calculate metrics on image and patch level
-	    │   ├── model_manager.py	<- Hold all Model definitions, loss function etc.
-	    │   ├── model_utils.py		<- Model helper functions, callbacks etc.
-	    │   ├── predict_model.py	<- Prediction script, predict image(s), predict patches, threaded prediction etc.
-	    │   ├── Result.py			<- Results-object to encapsulate all patch results
-	    │   └── train_model.py		<- Train the modell with train and evaluation data, save checkpoints etc.
-	    |
-	    ├── utils_io.py				<- Helper for general IO-operations, logfilemanagement, function logger
-	    └── visualization			
-	        └── utils.py			<- Confusion Matrix, history plotting, etc.
-
- 
+	|
+	├── src
+	│   ├── app
+	│   │   ├── app.py
+	│   │   ├── static
+	│   │   └── templates
+	|   |
+	│   ├── data
+	│   │   ├── data_utils.py
+	│   │   ├── reports
+	│   │   ├── patch_all_images.py
+	│   │   └── split_dataset.py
+	│   |
+	|   ├── features
+	│   │   └── build_features.py
+	│   |
+	│   ├── models
+	│   │   ├── evaluate_model.py
+	│   │   ├── model_manager.py
+	│   │   ├── model_utils.py
+	│   │   ├── predict_model.py
+	│   │   ├── reports
+	│   │   ├── Result.py
+	│   │   └── train_model.py
+	│   |
+	│   ├── utils_io.py
+	│   └── visualization
+	│       ├── utils.py
+	│       └── visualize.py
+	|
+	└── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
 Contributions:
 --------
