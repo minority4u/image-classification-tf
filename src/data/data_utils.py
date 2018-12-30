@@ -72,7 +72,7 @@ def get_train_and_validation_generator(path_to_data, validation_split, image_siz
     train_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size_train, class_mode,
                                         'training', shuffle=True)
     validation_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size_val, class_mode,
-                                             'validation', shuffle=False)
+                                             'validation', shuffle=True)
     return train_generator, validation_generator
 
 
