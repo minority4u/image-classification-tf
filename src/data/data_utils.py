@@ -58,7 +58,7 @@ def __get_image_data_generator__(validation_split):
 
 
 def get_train_and_validation_generator(path_to_data, validation_split, image_size, batch_size_train, batch_size_val,
-                                       class_mode, color_mode):
+                                       class_mode, color_mode='rgb'):
     """
     Returns Training and Validation Generator for Keras fit_generator usage
     :param path_to_data: Path to data directory. Subfolders describe the classes
@@ -70,9 +70,9 @@ def get_train_and_validation_generator(path_to_data, validation_split, image_siz
     """
     image_data_generator = __get_image_data_generator__(validation_split)
     train_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size_train, class_mode,
-                                        'training', shuffle=True)
+                                        'training', shuffle=True, color_mode=color_mode)
     validation_generator = __get_generator__(image_data_generator, path_to_data, image_size, batch_size_val, class_mode,
-                                             'validation', shuffle=True)
+                                             'validation', shuffle=False, color_mode=color_mode)
     return train_generator, validation_generator
 
 
