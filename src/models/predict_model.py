@@ -1,27 +1,19 @@
 import os
 import sys
 import logging
-import threading
+
 from concurrent.futures import ThreadPoolExecutor
-import concurrent
-import concurrent.futures as futures
 
 sys.path.append(os.path.abspath("."))
 import cv2
 from src.data.data_utils import create_patches, load_image
 from models.load import init
-from src.utils_io import Console_and_file_logger, parameter_logger
-from src.visualization.utils import create_reports
+from src.utils_io import Console_and_file_logger
 from src.data.data_utils import get_class_names
-from scipy.misc import imsave, imread, imresize
-import numpy as np
 from argparse import ArgumentParser
 import yaml
 import json
 from src.models.Result import PatchResult, ImageResult, Result
-
-from collections import Counter
-import operator
 
 global model, graph
 global config

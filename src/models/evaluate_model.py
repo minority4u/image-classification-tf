@@ -3,25 +3,17 @@ import sys
 import logging
 
 sys.path.append(os.path.abspath("."))
-import cv2
-from src.data.data_utils import create_patches
+
 from models.load import init
 from src.utils_io import Console_and_file_logger
 from src.visualization.utils import create_reports
 from src.data.data_utils import load_all_images
 from src.models.predict_model import external_predict_images
-from src.data.data_utils import __get_generator__
-from keras.preprocessing.image import ImageDataGenerator
 from src.data.data_utils import get_class_names, set_config
-from src.models.Result import PatchResult, ImageResult, Result
-from scipy.misc import imsave, imread, imresize
-import numpy as np
+from src.models.Result import Result
 from argparse import ArgumentParser
 import yaml
 import json
-
-from collections import Counter
-import operator
 
 global model, graph
 global config

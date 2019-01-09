@@ -1,6 +1,5 @@
 # local package
--e .
-
+# -e .
 # external requirements
 click
 Sphinx

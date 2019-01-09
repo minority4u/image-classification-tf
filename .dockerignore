@@ -1,7 +1,7 @@
 .git
 data
 docs
-models
+models/old_model_files
 notebooks
 reports
 venv

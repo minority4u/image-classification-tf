@@ -21,15 +21,6 @@ import json
 from imageio import imread
 from argparse import ArgumentParser
 from src.utils_io import parameter_logger, Console_and_file_logger
-from src.models.Result import PatchResult, ImageResult, Result
-# scientific computing library for saving, reading, and resizing images
-from scipy.misc import imsave, imread, imresize
-import numpy as np
-# for importing our keras model
-import keras.models
-# for regular expressions, saves time dealing with string data
-import re
-
 from src.models.predict_model import external_predict_images
 
 
@@ -48,18 +39,21 @@ parser = ArgumentParser()
 
 # define arguments and default values to parse
 # define tha path to your config file
+config_path = os.path.join(os.getcwd(), 'config/app/inception_v3_base.yml')
 parser.add_argument("--config", "-c", help="Define the path to config.yml",
-                    default="config/app/inception_v3_base.yml", required=False)
+                    default=config_path, required=False)
 
 parser.add_argument("--working_dir", help="Define the absolute path to the project root",
                     default="../../", required=False)
 # parser.add_argument("--modelskiptraining", help="Skip Training", default="None", required=False)
 
 args = parser.parse_args()
-print(args.config)
+logging.info(args.config)
+logging.info(os.environ['PATH'])
+logging.info('working app dir: {}'.format(os.getcwd()))
 # Make sure the config exists
 assert os.path.exists(
-    args.config), "Config does not exist {}!, Please create a config.yml in root or set the path with --config.".format(
+    args.config), "Config does not exist {} !, Please create a config.yml in root or set the path with --config.".format(
     args.config)
 # Load config
 params = yaml.load(open(args.config, "r"))
@@ -135,6 +129,6 @@ if __name__ == "__main__":
     # decide what port to run the app in
     port = int(os.environ.get('PORT', 5000))
     # run the app locally on the givn port
-    #app.run(debug=True, host='0.0.0.0', port=port)
-# optional if we want to run in debugging mode
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=port)
+    # optional if we want to run in debugging mode
+    #app.run(debug=True)

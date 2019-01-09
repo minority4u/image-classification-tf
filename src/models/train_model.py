@@ -5,14 +5,13 @@ import logging
 sys.path.append(os.path.abspath("."))
 print(sys.path)
 
-# import own lobs
+# import own libs
 from src.models.model_manager import *
 from src.models.evaluate_model import evaluate
 from src.data.data_utils import get_train_and_validation_generator
 from src.models.model_utils import get_callbacks
 from src.visualization.utils import plot_history
 from src.utils_io import Console_and_file_logger, ensure_dir
-from src.visualization.utils import create_reports
 from keras.backend.tensorflow_backend import set_session
 from collections import Counter
 

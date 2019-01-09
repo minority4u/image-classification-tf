@@ -5,10 +5,12 @@ from keras.models import model_from_json
 from src.models.model_manager import get_optimizer
 from scipy.misc import imread, imresize,imshow
 import tensorflow as tf
+import os
 
 
 def init(config):
-	json_file = open(config['model_json'],'r')
+	model_path = os.path.join(os.getcwd(), config['model_json'])
+	json_file = open(model_path,'r')
 	loaded_model_json = json_file.read()
 	json_file.close()
 	# load the json file
