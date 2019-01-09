@@ -1,8 +1,11 @@
-FROM python:3.6
+#FROM python:3.6
 
-COPY requirements.txt /temp/
+#COPY requirements.txt /temp/
 #RUN pip install --upgrade pip setuptools wheel
-RUN pip install -r /temp/requirements.txt
+#RUN pip install -r /temp/requirements.txt
+
+# faster, we dont need to rebuild the requirements every time
+FROM multiclasskeras_base_image:latest
 
 COPY models/load.py /code/models/load.py
 COPY models/Train_inception_v3/model.json /code/models/Train_inception_v3/model.json

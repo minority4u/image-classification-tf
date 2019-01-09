@@ -87,7 +87,7 @@ def index():
 def update_model():
     print('reloading model and graph')
     global model, graph
-    model, graph = init()
+    model, graph = init(params)
     return jsonify({'update model': 'success'})
 
 #@parameter_logger
