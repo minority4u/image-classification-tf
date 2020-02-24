@@ -11,6 +11,7 @@
 import sys
 # for reading operating system data
 import os
+import numpy as np
 
 # tell our app where our saved model is
 sys.path.append(os.path.abspath("."))
@@ -56,7 +57,7 @@ assert os.path.exists(
     args.config), "Config does not exist {} !, Please create a config.yml in root or set the path with --config.".format(
     args.config)
 # Load config
-params = yaml.load(open(args.config, "r"))
+params = yaml.load(open(args.config, "r"), Loader=yaml.FullLoader)
 # initialize these variables
 model, graph = init(params)
 
@@ -109,15 +110,26 @@ def predict():
     logging.debug(x)
 
     t1 = time()
-    result = external_predict_images([x], '', model, graph, config, resize=True)
-    logging.debug(result)
-    prediction = result.get_image_results_as_class_name()
+    try:
+        result = external_predict_images([x], '', model, graph, config, resize=True)
+
+        logging.debug(result)
+        prediction = result.get_image_results_as_class_name()
+        prob = json.dumps(result.get_probabillities())
+        patches = result.get_number_of_patches()
+    except Exception as e:
+        logging.error(str(e))
+        prediction = 'Internal error {}'.format(str(e))
+        prob = '0.0'
+        patches = '0'
+
+
 
     resp = {}
     resp['result'] = str(prediction)
     resp['time'] = str((time()-t1))
-    resp['probability'] = json.dumps(result.get_probabillities())
-    resp['patches'] = result.get_number_of_patches()
+    resp['probability'] = prob
+    resp['patches'] = patches
 
     response = jsonify(resp)
     logging.debug(response)

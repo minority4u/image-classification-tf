@@ -8,10 +8,10 @@ Prerequisites:
 
 Steps:
 - Create base-image
-	docker-compose -f ./docker-compose_base.yml -p multiclasskeras create 
+	docker-compose -f ./docker-compose_base.yml -p multiclasskeras build
 	
 - Create classification-image
-	docker-compose -f ./docker-compose.yml create
+	docker-compose -f ./docker-compose.yml build --no-cache
 	
 - Create Container Registry and push image
 

@@ -35,13 +35,9 @@ def predict_single_patch(image, label):
         image = cv2.resize(image, (224, 224))
 
     x = image.reshape(1, 224, 224, 3)
+    p_prediction = model.predict(x)
 
-    # in our computation graph
-    with graph_single.as_default():
-        # perform the prediction
-        p_prediction = model.predict(x)
-
-        return PatchResult(class_prob = p_prediction, ground_truth = label)
+    return PatchResult(class_prob = p_prediction, ground_truth = label)
 
 
 

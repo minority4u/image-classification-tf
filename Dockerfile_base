@@ -1,5 +1,5 @@
 FROM python:3.6
 
-COPY requirements.txt /temp/
-#RUN pip install --upgrade pip setuptools wheel
-RUN pip install -r /temp/requirements.txt
+COPY requirements_local.txt /temp/
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install -r /temp/requirements_local.txt

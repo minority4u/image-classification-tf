@@ -64,8 +64,10 @@ target/
 *.rdb
 # ignore only jpgs inside the data directory
 data/**/*.jpg
+
+# ignore all big files, allow model h5 files, for this model they are small, allows fast deployment
 *.zip
-*.h5
+#*.h5
 *.hdf5
 logs/*
 *output.png
