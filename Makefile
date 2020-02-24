@@ -35,8 +35,12 @@ requirements: test_environment
 	fi
 	. venv/bin/activate
 	venv/bin/pip install -U pip setuptools wheel
-	venv/bin/pip install -r requirements.txt
+	venv/bin/pip install -r requirements_local.txt
 
+## Install Python dependencies, activate and deploy flask locally
+docker_run:
+	docker-compose -f ./docker-compose_base.yml -p multiclasskeras build
+	docker-compose -f ./docker-compose.yml up
 
 ## Install Python dependencies, activate and deploy flask locally
 run: requirements
@@ -77,9 +81,9 @@ create_environment:
 ifeq (True,$(HAS_CONDA))
 		@echo ">>> Detected conda, creating conda environment."
 ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
-	conda create --name $(PROJECT_NAME) python=3.6
+	conda create --name $(PROJECT_NAME) python=3.7
 else
-	conda create --name $(PROJECT_NAME) python=2.7
+	@echo ">>> Python 3 required, could not find it."
 endif
 		@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
 else
