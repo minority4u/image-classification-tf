@@ -40,6 +40,15 @@ Steps:
 	
 -Use Service
 
+To clean all local docker images and containers:
+alias docker_clean_images='docker rmi $(docker images -a --filter=dangling=true -q)'
+alias docker_clean_ps='docker rm $(docker ps --filter=status=exited --filter=status=created -q)'
+
+docker kill $(docker ps -q)
+docker_clean_ps
+docker rmi $(docker images -a -q)
+
+
 Good to Know:
 - Force update of deployment
 	kubectl replace --force -f kubernetes_deploy.yaml
