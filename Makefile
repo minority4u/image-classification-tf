@@ -33,7 +33,7 @@ train_v3: requirements
 
 ## Install Python Dependencies
 requirements: test_environment
-	pip install virtualenv
+	$(PIP_MANAGER) install virtualenv
 	if [ -d "./venv" ]; then\
 		echo ">>> venv already exists"; \
 	else \
