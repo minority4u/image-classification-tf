@@ -87,9 +87,14 @@ git clone https://github.com/minority4u/multiclass_keras
 cd multiclass_keras
 ```
 
-- Install all Dependencies, and start the app (all in one), works with OSX and Linux
+- Install all Dependencies, and start the app locally in an virtual environment (all in one), works with OSX and Linux
 ```
 make run
+```
+
+- Create a docker image, install all requirements in this container and start the service
+```
+make docker_run
 ```
 
 Setup native with Windows
@@ -125,8 +130,13 @@ git clone https://github.com/minority4u/keras_flask_deployment
 cd keras_flask_deployment
 ```
 - Create and run Docker-Container
+
 ```
-docker-compose -up docker-compose.yml
+1. Create base-image
+	docker-compose -f ./docker-compose_base.yml -p multiclasskeras build
+	
+2. Create classification-image
+	docker-compose -f ./docker-compose.yml build --no-cache
 ```
 
 
