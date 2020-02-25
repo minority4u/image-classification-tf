@@ -17,9 +17,9 @@ HAS_CONDA=True
 endif
 
 ifeq (,$(shell which pip))
-PIP_MANAGER=pip
-else
 PIP_MANAGER=pip3
+else
+PIP_MANAGER=pip
 endif
 
 #################################################################################
